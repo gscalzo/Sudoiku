@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class PuzzleView extends View {
@@ -31,7 +32,7 @@ public class PuzzleView extends View {
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		tileWidth = w / 9f;
-		tileHeight = tileWidth;//h / 9f;
+		tileHeight = tileWidth;// h / 9f;
 		board = new Board(getWidth(), getHeight(), tileWidth, tileHeight,
 				puzzle, getResources());
 		selectRect();
@@ -99,13 +100,44 @@ public class PuzzleView extends View {
 			break;
 		case KeyEvent.KEYCODE_ENTER:
 		case KeyEvent.KEYCODE_DPAD_CENTER:
-			game.showKeypadOrError(selectedTile.x, selectedTile.y);
+			showKeypadOrError(selectedTile.x, selectedTile.y);
 			break;
 
 		default:
 			return super.onKeyDown(keyCode, event);
 		}
 		return true;
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (event.getAction() != MotionEvent.ACTION_DOWN)
+			return super.onTouchEvent(event);
+		Log.d(TAG, "onTouchEvent: x touch  " + event.getX() + ", y "
+				+ event.getY());
+
+		int xTouched = (int) (event.getX() / tileWidth);
+		int yTouched = (int) (event.getY() / tileHeight);
+
+		selectTile(xTouched, yTouched);
+		// showKeypadOrError(selX, selY);
+		Log.d(TAG, "onTouchEvent: x " + selectedTile.x + ", y "
+				+ selectedTile.y);
+		return true;
+	}
+
+	protected void showKeypadOrError(int x, int y) {
+		int tiles[] = puzzle.getUsedTiles(x, y);
+		if (tiles.length == 9) {
+			// Toast toast = Toast.makeText(this,
+			// R.string.no_moves_label, Toast.LENGTH_SHORT);
+			// toast.setGravity(Gravity.CENTER, 0, 0);
+			// toast.show();
+			// } else {
+			// Log.d(TAG, "showKeypad: used=" + toPuzzleString(tiles));
+			// Dialog v = new Keypad(this, tiles, puzzleView);
+			// v.show();
+		}
 	}
 
 	public void setSelectedTile(int tile) {
@@ -118,10 +150,13 @@ public class PuzzleView extends View {
 	}
 
 	private void moveSelection(int diffX, int diffY) {
-		Log.d(TAG, "tileSelected=" + selectedTile);
+		selectTile(selectedTile.x + diffX, selectedTile.y + diffY);
+	}
+
+	private void selectTile(int xTile, int yTile) {
 		invalidate(selectedRect);
-		selectedTile.x = Math.min(Math.max(selectedTile.x + diffX, 0), 8);
-		selectedTile.y = Math.min(Math.max(selectedTile.y + diffY, 0), 8);
+		selectedTile.x = Math.min(Math.max(xTile, 0), 8);
+		selectedTile.y = Math.min(Math.max(yTile, 0), 8);
 		selectRect();
 		invalidate(selectedRect);
 	}
