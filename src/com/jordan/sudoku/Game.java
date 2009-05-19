@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class Game extends Activity {
-	private static final String TAG = "Sudoku";
+	public static final String TAG = "Sudoku";
 
 	public static final String KEY_DIFFICULTY = "difficulty";
 	public static final int DIFFICULTY_EASY = 0;

@@ -3,30 +3,25 @@ package com.jordan.sudoku;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 
 public class Board {
 
-	private float tileWidth;
-	private int height;
-	private float tileHeight;
-	private int width;
 	private Paint dark;
 	private Paint hilite;
 	private Paint light;
 	private Paint background;
 	private Paint foreground;
 	private Puzzle puzzle;
+	private Paint puzzle_selected;
 	int hintColors[];
+	private SudokuDimensions dimensions;
 
-	public Board(int width, int height, float tileWidth, float tileHeight,
-			Puzzle puzzle, Resources resources) {
-		this.width = width;
-		this.height = height;
-		this.tileWidth = tileWidth;
-		this.tileHeight = tileHeight;
+	public Board(SudokuDimensions dimensions, Puzzle puzzle, Resources resources) {
+		this.dimensions = dimensions;
 		this.puzzle = puzzle;
 		createPaints(resources);
 		createHintColors(resources);
@@ -44,6 +39,7 @@ public class Board {
 		light = createPaint(R.color.puzzle_light, resources);
 		hilite = createPaint(R.color.puzzle_hilite, resources);
 		background = createPaint(R.color.puzzle_background, resources);
+		puzzle_selected = createPaint(R.color.puzzle_selected, resources);
 
 		createForegroundPaint(resources);
 	}
@@ -52,8 +48,8 @@ public class Board {
 		foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
 		foreground.setColor(resources.getColor(R.color.puzzle_foreground));
 		foreground.setStyle(Style.FILL);
-		foreground.setTextSize(tileHeight * 0.75f);
-		foreground.setTextScaleX(tileWidth / tileHeight);
+		foreground.setTextSize(dimensions.tileSide * 0.75f);
+		// foreground.setTextScaleX(tileWidth / tileHeight);
 		foreground.setTextAlign(Paint.Align.CENTER);
 	}
 
@@ -62,6 +58,12 @@ public class Board {
 		drawLines(canvas);
 		drawNumbers(canvas);
 		drawHints(canvas);
+
+		Point tileSelected = puzzle.getTileSelected();
+		Rect selectedRect = new Rect();
+		getTileRect(tileSelected.x, tileSelected.y, selectedRect);
+		canvas.drawRect(selectedRect, puzzle_selected);
+
 	}
 
 	private void drawHints(Canvas canvas) {
@@ -71,7 +73,7 @@ public class Board {
 			for (int j = 0; j < 9; j++) {
 				int movesleft = 9 - puzzle.getUsedTiles(i, j).length;
 				if (movesleft < hintColors.length) {
-					getRect(i, j, r);
+					getTileRect(i, j, r);
 					hint.setColor(hintColors[movesleft]);
 					canvas.drawRect(r, hint);
 				}
@@ -80,12 +82,22 @@ public class Board {
 	}
 
 	private void getRect(int x, int y, Rect rect) {
-		   rect.set((int) (x * width), (int) (y * height), (int) (x
-		         * width + width), (int) (y * height + height));
-		}
+		rect.set((int) (x * dimensions.boardSide),
+				(int) (y * dimensions.boardSide), (int) (x
+						* dimensions.boardSide + dimensions.boardSide),
+				(int) (y * dimensions.boardSide + dimensions.boardSide));
+	}
+
+	private void getTileRect(int x, int y, Rect rect) {
+		rect.set((int) (x * dimensions.tileSide),
+				(int) (y * dimensions.tileSide), (int) (x
+						* dimensions.tileSide + dimensions.tileSide),
+				(int) (y * dimensions.tileSide + dimensions.tileSide));
+	}
 
 	private void drawBackground(Canvas canvas) {
-		canvas.drawRect(0, 0, width, height, background);
+		canvas.drawRect(0, 0, dimensions.boardSide, dimensions.boardSide,
+				background);
 	}
 
 	private void drawLines(Canvas canvas) {
@@ -102,16 +114,17 @@ public class Board {
 	}
 
 	private void drawVerticalLine(Canvas canvas, Paint color, int i) {
-		canvas.drawLine(i * tileWidth, 0, i * tileWidth, height, color);
-		canvas
-				.drawLine(i * tileWidth + 1, 0, i * tileWidth + 1, height,
-						hilite);
+		canvas.drawLine(i * dimensions.tileSide, 0, i * dimensions.tileSide,
+				dimensions.boardSide, color);
+		canvas.drawLine(i * dimensions.tileSide + 1, 0, i * dimensions.tileSide
+				+ 1, dimensions.boardSide, hilite);
 	}
 
 	private void drawHorizontalLine(Canvas canvas, Paint color, int i) {
-		canvas.drawLine(0, i * tileHeight, width, i * tileHeight, color);
-		canvas.drawLine(0, i * tileHeight + 1, width, i * tileHeight + 1,
-				hilite);
+		canvas.drawLine(0, i * dimensions.tileSide, dimensions.boardSide, i
+				* dimensions.tileSide, color);
+		canvas.drawLine(0, i * dimensions.tileSide + 1, dimensions.boardSide, i
+				* dimensions.tileSide + 1, hilite);
 	}
 
 	private Paint createPaint(int color, Resources resources) {
@@ -121,13 +134,14 @@ public class Board {
 	}
 
 	private void drawNumbers(Canvas canvas) {
-		float xTileCenter = tileWidth / 2;
-		float yTileCenter = tileHeight / 2 - (heightCenterOfText()) / 2;
+		float xTileCenter = dimensions.tileSide / 2;
+		float yTileCenter = dimensions.tileSide / 2 - (heightCenterOfText())
+				/ 2;
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
-				canvas.drawText(puzzle.getTileString(col, row), col * tileWidth
-						+ xTileCenter, row * tileHeight + yTileCenter,
-						foreground);
+				canvas.drawText(puzzle.getTileString(col, row), col
+						* dimensions.tileSide + xTileCenter, row
+						* dimensions.tileSide + yTileCenter, foreground);
 			}
 		}
 

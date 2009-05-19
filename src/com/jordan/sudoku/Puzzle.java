@@ -14,6 +14,8 @@ public class Puzzle {
 	private int puzzle[] = new int[9 * 9];
 
 	private final int used[][][] = new int[9][9][];
+	private int selectedTileX;
+	private int selectedTileY;
 
 	public Puzzle(int diff) {
 
@@ -22,14 +24,13 @@ public class Puzzle {
 	}
 
 	/** Convert an array into a puzzle string */
-//	static private String toPuzzleString(int[] puz) {
-//		StringBuilder buf = new StringBuilder();
-//		for (int element : puz) {
-//			buf.append(element);
-//		}
-//		return buf.toString();
-//	}
-
+	// static private String toPuzzleString(int[] puz) {
+	// StringBuilder buf = new StringBuilder();
+	// for (int element : puz) {
+	// buf.append(element);
+	// }
+	// return buf.toString();
+	// }
 	public int[] newPuzzle(int diff) {
 		String puz;
 		// TODO: Continue last game
@@ -76,16 +77,16 @@ public class Puzzle {
 		return used[x][y];
 	}
 
-	boolean setTileIfValid(Point selectedTile, int value) {
-		Log.d("EEEEEEE", String.valueOf(value));
-		int tiles[] = getUsedTiles(selectedTile.x, selectedTile.y);
+	boolean setTileIfValid(int value) {
+		Log.d(Game.TAG, String.valueOf(value));
+		int tiles[] = getUsedTiles(selectedTileX, selectedTileY);
 		if (value != 0) {
 			for (int tile : tiles) {
 				if (tile == value)
 					return false;
 			}
 		}
-		setTile(selectedTile.x, selectedTile.y, value);
+		setTile(selectedTileX, selectedTileY, value);
 		calculateUsedTiles();
 		return true;
 	}
@@ -143,6 +144,23 @@ public class Puzzle {
 				c1[nused++] = t;
 		}
 		return c1;
+	}
+
+	public void selectTile(int x, int y) {
+		selectedTileX = Math.min(Math.max(x, 0), 8);
+		selectedTileY = Math.min(Math.max(y, 0), 8);
+	}
+
+	public boolean moveSelection(int diffX, int diffY) {
+		selectTile(selectedTileX + diffX, selectedTileY + diffY);
+
+		// TODO
+		// ritornare true solo se effettivamente cambiato
+		return true;
+	}
+
+	public Point getTileSelected() {
+		return new Point(selectedTileX, selectedTileY);
 	}
 
 }
