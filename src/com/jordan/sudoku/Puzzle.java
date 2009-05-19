@@ -22,13 +22,13 @@ public class Puzzle {
 	}
 
 	/** Convert an array into a puzzle string */
-	static private String toPuzzleString(int[] puz) {
-		StringBuilder buf = new StringBuilder();
-		for (int element : puz) {
-			buf.append(element);
-		}
-		return buf.toString();
-	}
+//	static private String toPuzzleString(int[] puz) {
+//		StringBuilder buf = new StringBuilder();
+//		for (int element : puz) {
+//			buf.append(element);
+//		}
+//		return buf.toString();
+//	}
 
 	public int[] newPuzzle(int diff) {
 		String puz;

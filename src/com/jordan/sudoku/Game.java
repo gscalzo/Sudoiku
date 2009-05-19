@@ -1,11 +1,8 @@
 package com.jordan.sudoku;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 
 public class Game extends Activity {
 	private static final String TAG = "Sudoku";
