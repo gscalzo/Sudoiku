@@ -18,6 +18,7 @@ public class Game extends Activity {
 
 	private PuzzleView puzzleView;
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
