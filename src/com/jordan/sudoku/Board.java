@@ -14,6 +14,7 @@ public class Board {
 	private Paint light;
 	private Paint background;
 	private Paint foreground;
+	private Paint givens_color;
 	private SudokuModel puzzle;
 	private Paint puzzle_selected;
 	int hintColors[];
@@ -41,24 +42,57 @@ public class Board {
 		background = createPaint(R.color.puzzle_background, resources);
 		puzzle_selected = createPaint(R.color.puzzle_selected, resources);
 
-		createForegroundPaint(resources);
+		foreground = createNumbersPaint(resources, R.color.puzzle_foreground);
+		givens_color = createNumbersPaint(resources, R.color.puzzle_given);
 	}
 
-	private void createForegroundPaint(Resources resources) {
-		foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
-		foreground.setColor(resources.getColor(R.color.puzzle_foreground));
+	private Paint createNumbersPaint(Resources resources, int color) {
+		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
+		foreground.setColor(resources.getColor(color));
 		foreground.setStyle(Style.FILL);
 		foreground.setTextSize(dimensions.tileSide * 0.75f);
 		foreground.setTextAlign(Paint.Align.CENTER);
+		return foreground;
 	}
 
 	public void draw(Canvas canvas) {
 		drawBackground(canvas);
 		drawLines(canvas);
 		drawNumbers(canvas);
+		drawKeyBoard(canvas);
 		drawHints(canvas);
 		drawSelection(canvas);
 
+	}
+
+	private void drawKeyBoard(Canvas canvas) {
+		int upper = dimensions.boardSide + (int) dimensions.tileSide;
+		canvas.drawRect(0, upper, dimensions.boardSide, upper
+				+ dimensions.tileSide, background);
+		for (int i = 0; i < 9; ++i) {
+			canvas.drawLine(i * dimensions.tileSide, upper, i
+					* dimensions.tileSide, upper + dimensions.tileSide, light);
+			canvas.drawLine(i * dimensions.tileSide + 1, upper, i
+					* dimensions.tileSide + 1, upper + dimensions.tileSide,
+					hilite);
+		}
+
+		float xTileCenter = dimensions.tileSide / 2;
+		float yTileCenter = dimensions.tileSide / 2 - (heightCenterOfText())
+				/ 2;
+		for (int currentNumber = 1; currentNumber <= 9; currentNumber++) {
+
+			Paint color = foreground;
+			Tile selectedTile = puzzle.selectedTile();
+			if (selectedTile.isGiven()
+					|| puzzle.isUsed(selectedTile.x(), selectedTile.y(),
+							currentNumber))
+				color = givens_color;
+
+			canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
+					* dimensions.tileSide + xTileCenter, upper + yTileCenter,
+					color);
+		}
 	}
 
 	private void drawSelection(Canvas canvas) {
@@ -134,12 +168,16 @@ public class Board {
 				/ 2;
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
-				canvas.drawText(puzzle.getTile(col, row).valueAsString(), col
+				Tile currentTile = puzzle.getTile(col, row);
+				Paint color = foreground;
+				if (currentTile.isGiven())
+					color = givens_color;
+
+				canvas.drawText(currentTile.valueAsString(), col
 						* dimensions.tileSide + xTileCenter, row
-						* dimensions.tileSide + yTileCenter, foreground);
+						* dimensions.tileSide + yTileCenter, color);
 			}
 		}
-
 	}
 
 	private float heightCenterOfText() {

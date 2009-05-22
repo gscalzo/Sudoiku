@@ -1,5 +1,5 @@
 package com.jordan.sudoku;
 
 public interface SudokuGenerator {
-	public int[] create(int diff);
+	public Tile[] create(int diff);
 }

@@ -1,12 +1,18 @@
 package com.jordan.sudoku;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jordan.sudoku.util.Pair;
 
 public class TestSudokuModel {
 
@@ -14,7 +20,7 @@ public class TestSudokuModel {
 
 	@Before
 	public void createTestContext() {
-		model = new SudokuModel(Game.DIFFICULTY_EASY);
+		model = new SudokuModel(Game.DIFFICULTY_EASY, new MySudokuGenerator());
 	}
 
 	@Test
@@ -40,12 +46,11 @@ public class TestSudokuModel {
 
 		for (Pair move : values.keySet()) {
 			model.selectTile(3, 3);
-			model.moveSelection(move.a, move.b);
+			model.moveSelection(move.a(), move.b());
 			Tile selectedTile = model.selectedTile();
 			Tile expectedSelected = values.get(move);
 			assertEquals(expectedSelected, selectedTile);
 		}
 	}
-
 
 }

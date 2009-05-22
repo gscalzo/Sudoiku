@@ -4,6 +4,7 @@ public class Tile {
 	private int x;
 	private int y;
 	private int value;
+	private boolean given = true;
 
 	@Override
 	public boolean equals(Object o) {
@@ -21,16 +22,23 @@ public class Tile {
 	public Tile(int x, int y, int value) {
 		this(x, y);
 		this.value = value;
+		if (value == 0) {
+			given = false;
+		}
 	}
 
 	@Override
 	public String toString() {
 
-		return "Tile: x [" + x + "] y [" + y + "]";
+		return "Tile: x [" + x + "] y [" + y + "] value [" + value + "]";
 	}
 
 	public int value() {
 		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 	public String valueAsString() {
@@ -45,5 +53,9 @@ public class Tile {
 
 	public int x() {
 		return x;
+	}
+
+	public boolean isGiven() {
+		return given;
 	}
 }

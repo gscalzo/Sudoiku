@@ -1,10 +1,14 @@
 package com.jordan.sudoku;
 
+import java.util.Observable;
+
 import android.util.Log;
 
-public class SudokuModel {
+import com.jordan.sudoku.util.Pair;
 
-	private int puzzle[] = new int[9 * 9];
+public class SudokuModel extends Observable {
+
+	private Tile puzzle[] = new Tile[9 * 9];
 
 	private final int used[][][] = new int[9][9][];
 	private int selectedTileX;
@@ -13,44 +17,51 @@ public class SudokuModel {
 	private SudokuGenerator sudokuGenerator = new StaticSudokuGenerator();
 
 	public SudokuModel(int diff) {
+		init(diff);
+	}
+
+	private void init(int diff) {
 		this.puzzle = sudokuGenerator.create(diff);
 		calculateUsedTiles();
 	}
 
-	private void setTile(int x, int y, int value) {
-		puzzle[y * 9 + x] = value;
+	public SudokuModel(int diff, SudokuGenerator sudokuGenerator) {
+		this.sudokuGenerator = sudokuGenerator;
+		init(diff);
 	}
 
-	private int getTileInt(int x, int y) {
+	private void setTile(int x, int y, int value) {
+		puzzle[y * 9 + x].setValue(value);
+	}
+
+	public Tile getTile(int x, int y) {
 		return puzzle[y * 9 + x];
 	}
-	
-	public Tile getTile(int x, int y) {
-		int valueAt=puzzle[y * 9 + x];
-		Tile tile = new Tile(x,y,valueAt);
-		
-		return tile;
-	}
-
 
 	protected int[] getUsedTiles(int x, int y) {
 		return used[x][y];
 	}
 
-	public boolean setTileIfValid(int value) {
-		Log.d(Game.TAG, String.valueOf(value));
-		int tiles[] = getUsedTiles(selectedTileX, selectedTileY);
+	public boolean setValueToTileIfValid(int x, int y, int value) {
+		if (getTile(x, y).isGiven() || isUsed(x, y, value))
+			return false;
+
+		setTile(x, y, value);
+		calculateUsedTiles();
+		setChanged();
+		notifyObservers();
+		return true;
+	}
+
+	public boolean isUsed(int x, int y, int value) {
+		int tiles[] = getUsedTiles(x, y);
 		if (value != 0) {
 			for (int tile : tiles) {
 				if (tile == value)
-					return false;
+					return true;
 			}
 		}
-		setTile(selectedTileX, selectedTileY, value);
-		calculateUsedTiles();
-		// TODO
-		// implementare update!!
-		return true;
+		return false;
 	}
 
 	private void calculateUsedTiles() {
@@ -67,7 +78,7 @@ public class SudokuModel {
 		for (int i = 0; i < 9; i++) {
 			if (i == y)
 				continue;
-			int t = getTileInt(x, i);
+			int t = getTile(x, i).value();
 			if (t != 0)
 				c[t - 1] = t;
 		}
@@ -75,7 +86,7 @@ public class SudokuModel {
 		for (int i = 0; i < 9; i++) {
 			if (i == x)
 				continue;
-			int t = getTileInt(i, y);
+			int t = getTile(i, y).value();
 			if (t != 0)
 				c[t - 1] = t;
 		}
@@ -86,7 +97,7 @@ public class SudokuModel {
 			for (int j = starty; j < starty + 3; j++) {
 				if (i == x && j == y)
 					continue;
-				int t = getTileInt(i, j);
+				int t = getTile(i, j).value();
 				if (t != 0)
 					c[t - 1] = t;
 			}
@@ -106,27 +117,42 @@ public class SudokuModel {
 		return c1;
 	}
 
+	static private String toPuzzleString(int[] puz) {
+		   StringBuilder buf = new StringBuilder();
+		   for (int element : puz) {
+		      buf.append(element);
+		   }
+		   return buf.toString();
+		}
+
+	
 	public void selectTile(int x, int y) {
-		selectedTileX = Math.min(Math.max(x, 0), 8);
-		selectedTileY = Math.min(Math.max(y, 0), 8);
-		// TODO
-		// implementare update!!
+		Pair previousPosition = new Pair(selectedTileX, selectedTileY);
+		setNewPosition(x, y);
+		Log.d(Game.TAG, "used[" + x + "][" + y + "] = "
+				+ toPuzzleString(used[x][y]));
+		notifyIfMoved(previousPosition);
 	}
 
-	public boolean moveSelection(int diffX, int diffY) {
-		selectTile(selectedTileX + diffX, selectedTileY + diffY);
+	private void setNewPosition(int x, int y) {
+		selectedTileX = Math.min(Math.max(x, 0), 8);
+		selectedTileY = Math.min(Math.max(y, 0), 8);
+	}
 
-		// TODO
-		// implementare update!!
-		return true;
+	private void notifyIfMoved(Pair previousPosition) {
+		if (selectedTileX != previousPosition.a()
+				|| selectedTileY != previousPosition.b())
+			setChanged();
+
+		notifyObservers();
+	}
+
+	public void moveSelection(int diffX, int diffY) {
+		selectTile(selectedTileX + diffX, selectedTileY + diffY);
 	}
 
 	public Tile selectedTile() {
-		return new Tile(selectedTileX, selectedTileY);
-	}
-
-	public void setGenerator(MySudokuGenerator sudokuGenerator) {
-		this.sudokuGenerator = sudokuGenerator;
+		return getTile(selectedTileX, selectedTileY);
 	}
 
 }

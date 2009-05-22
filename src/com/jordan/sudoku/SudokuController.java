@@ -16,45 +16,61 @@ public class SudokuController {
 	public boolean isKeyManaged(int keyCode, KeyEvent event) {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_UP:
-			return moveSelection(0, -1);
+			moveSelection(0, -1);
+			return true;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
-			return moveSelection(0, +1);
+			moveSelection(0, +1);
+			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-			return moveSelection(-1, 0);
+			moveSelection(-1, 0);
+			return true;
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			return moveSelection(+1, 0);
+			moveSelection(+1, 0);
+			return true;
 		case KeyEvent.KEYCODE_0:
+			return true;
 		case KeyEvent.KEYCODE_SPACE:
-			return setSelectedTile(0);
+			setSelectedTile(0);
+			return true;
 		case KeyEvent.KEYCODE_1:
-			return setSelectedTile(1);
+			setSelectedTile(1);
+			return true;
 		case KeyEvent.KEYCODE_2:
-			return setSelectedTile(2);
+			setSelectedTile(2);
+			return true;
 		case KeyEvent.KEYCODE_3:
-			return setSelectedTile(3);
+			setSelectedTile(3);
+			return true;
 		case KeyEvent.KEYCODE_4:
-			return setSelectedTile(4);
+			setSelectedTile(4);
+			return true;
 		case KeyEvent.KEYCODE_5:
-			return setSelectedTile(5);
+			setSelectedTile(5);
+			return true;
 		case KeyEvent.KEYCODE_6:
-			return setSelectedTile(6);
+			setSelectedTile(6);
+			return true;
 		case KeyEvent.KEYCODE_7:
-			return setSelectedTile(7);
+			setSelectedTile(7);
+			return true;
 		case KeyEvent.KEYCODE_8:
-			return setSelectedTile(8);
+			setSelectedTile(8);
+			return true;
 		case KeyEvent.KEYCODE_9:
-			return setSelectedTile(9);
+			setSelectedTile(9);
+			return true;
 		default:
 			return false;
 		}
 	}
 
 	public boolean setSelectedTile(int tile) {
-		return puzzle.setTileIfValid(tile);
+		Tile selected = puzzle.selectedTile();
+		return puzzle.setValueToTileIfValid(selected.x(), selected.y(), tile);
 	}
 
-	private boolean moveSelection(int diffX, int diffY) {
-		return puzzle.moveSelection(diffX, diffY);
+	private void moveSelection(int diffX, int diffY) {
+		puzzle.moveSelection(diffX, diffY);
 	}
 
 	public boolean isTouchManaged(MotionEvent event) {
@@ -70,5 +86,4 @@ public class SudokuController {
 		puzzle.selectTile(xTouched, yTouched);
 		return true;
 	}
-
 }

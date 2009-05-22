@@ -1,5 +1,8 @@
 package com.jordan.sudoku;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
@@ -7,7 +10,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class PuzzleView extends View {
+public class PuzzleView extends View implements Observer{
 	private Board board;
 
 	private SudokuModel puzzle;
@@ -17,6 +20,8 @@ public class PuzzleView extends View {
 		super(context);
 
 		this.puzzle = puzzle;
+		puzzle.addObserver(this);
+		
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 	}
@@ -33,19 +38,16 @@ public class PuzzleView extends View {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.d(Game.TAG, "onKeyDown: keycode=" + keyCode + ", event=" + event);
-		if (controller.isKeyManaged(keyCode, event)) {
-			invalidate();
+		if (controller.isKeyManaged(keyCode, event)) 
 			return true;
-		}
+
 		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (controller.isTouchManaged(event)) {
-			invalidate();
+		if (controller.isTouchManaged(event)) 
 			return true;
-		}
 
 		return super.onTouchEvent(event);
 	}
@@ -53,6 +55,10 @@ public class PuzzleView extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		board.draw(canvas);
+	}
+
+	public void update(Observable observable, Object data) {
+		invalidate();		
 	}
 
 }
