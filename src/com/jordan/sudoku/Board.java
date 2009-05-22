@@ -3,7 +3,6 @@ package com.jordan.sudoku;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
@@ -15,12 +14,13 @@ public class Board {
 	private Paint light;
 	private Paint background;
 	private Paint foreground;
-	private Puzzle puzzle;
+	private SudokuModel puzzle;
 	private Paint puzzle_selected;
 	int hintColors[];
 	private SudokuDimensions dimensions;
 
-	public Board(SudokuDimensions dimensions, Puzzle puzzle, Resources resources) {
+	public Board(SudokuDimensions dimensions, SudokuModel puzzle,
+			Resources resources) {
 		this.dimensions = dimensions;
 		this.puzzle = puzzle;
 		createPaints(resources);
@@ -49,7 +49,6 @@ public class Board {
 		foreground.setColor(resources.getColor(R.color.puzzle_foreground));
 		foreground.setStyle(Style.FILL);
 		foreground.setTextSize(dimensions.tileSide * 0.75f);
-		// foreground.setTextScaleX(tileWidth / tileHeight);
 		foreground.setTextAlign(Paint.Align.CENTER);
 	}
 
@@ -58,12 +57,15 @@ public class Board {
 		drawLines(canvas);
 		drawNumbers(canvas);
 		drawHints(canvas);
+		drawSelection(canvas);
 
-		Point tileSelected = puzzle.getTileSelected();
+	}
+
+	private void drawSelection(Canvas canvas) {
+		Tile tileSelected = puzzle.selectedTile();
 		Rect selectedRect = new Rect();
-		getTileRect(tileSelected.x, tileSelected.y, selectedRect);
+		getTileRect(tileSelected.x(), tileSelected.y(), selectedRect);
 		canvas.drawRect(selectedRect, puzzle_selected);
-
 	}
 
 	private void drawHints(Canvas canvas) {
@@ -81,18 +83,11 @@ public class Board {
 		}
 	}
 
-	private void getRect(int x, int y, Rect rect) {
-		rect.set((int) (x * dimensions.boardSide),
-				(int) (y * dimensions.boardSide), (int) (x
-						* dimensions.boardSide + dimensions.boardSide),
-				(int) (y * dimensions.boardSide + dimensions.boardSide));
-	}
-
 	private void getTileRect(int x, int y, Rect rect) {
 		rect.set((int) (x * dimensions.tileSide),
-				(int) (y * dimensions.tileSide), (int) (x
-						* dimensions.tileSide + dimensions.tileSide),
-				(int) (y * dimensions.tileSide + dimensions.tileSide));
+				(int) (y * dimensions.tileSide),
+				(int) (x * dimensions.tileSide + dimensions.tileSide), (int) (y
+						* dimensions.tileSide + dimensions.tileSide));
 	}
 
 	private void drawBackground(Canvas canvas) {
@@ -139,7 +134,7 @@ public class Board {
 				/ 2;
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
-				canvas.drawText(puzzle.getTileString(col, row), col
+				canvas.drawText(puzzle.getTile(col, row).valueAsString(), col
 						* dimensions.tileSide + xTileCenter, row
 						* dimensions.tileSide + yTileCenter, foreground);
 			}

@@ -5,15 +5,15 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 public class SudokuController {
-	private Puzzle puzzle;
+	private SudokuModel puzzle;
 	private SudokuDimensions dimensions;
 
-	public SudokuController(SudokuDimensions dimensions, Puzzle puzzle) {
+	public SudokuController(SudokuDimensions dimensions, SudokuModel puzzle) {
 		this.puzzle = puzzle;
 		this.dimensions = dimensions;
 	}
 
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public boolean isKeyManaged(int keyCode, KeyEvent event) {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_UP:
 			return moveSelection(0, -1);
@@ -57,7 +57,7 @@ public class SudokuController {
 		return puzzle.moveSelection(diffX, diffY);
 	}
 
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean isTouchManaged(MotionEvent event) {
 		if (event.getAction() != MotionEvent.ACTION_DOWN)
 			return false;
 

@@ -25,7 +25,7 @@ public class Game extends Activity {
 		Log.d(TAG, "onCreate");
 		int diff = getIntent().getIntExtra(KEY_DIFFICULTY, DIFFICULTY_EASY);
 
-		Puzzle puzzle =  new Puzzle(diff);
+		SudokuModel puzzle =  new SudokuModel(diff);
 
 
 		puzzleView = new PuzzleView(this, puzzle);

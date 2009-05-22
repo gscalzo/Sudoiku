@@ -2,25 +2,20 @@ package com.jordan.sudoku;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class PuzzleView extends View {
-	private final Game game;
 	private Board board;
 
-	private Puzzle puzzle;
+	private SudokuModel puzzle;
 	private SudokuController controller;
 
-	public PuzzleView(Context context, Puzzle puzzle) {
+	public PuzzleView(Context context, SudokuModel puzzle) {
 		super(context);
 
-		this.game = (Game) context;
 		this.puzzle = puzzle;
 		setFocusable(true);
 		setFocusableInTouchMode(true);
@@ -31,16 +26,14 @@ public class PuzzleView extends View {
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		SudokuDimensions dimensions = new SudokuDimensions(getWidth());
-
 		controller = new SudokuController(dimensions, puzzle);
-
 		board = new Board(dimensions, puzzle, getResources());
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.d(Game.TAG, "onKeyDown: keycode=" + keyCode + ", event=" + event);
-		if (controller.onKeyDown(keyCode, event)) {
+		if (controller.isKeyManaged(keyCode, event)) {
 			invalidate();
 			return true;
 		}
@@ -49,7 +42,7 @@ public class PuzzleView extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (controller.onTouchEvent(event)) {
+		if (controller.isTouchManaged(event)) {
 			invalidate();
 			return true;
 		}
