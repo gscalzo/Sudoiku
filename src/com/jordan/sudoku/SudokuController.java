@@ -80,10 +80,26 @@ public class SudokuController {
 		Log.d(Game.TAG, "onTouchEvent: x touch  " + event.getX() + ", y "
 				+ event.getY());
 
+		checkBoardTouch(event);
+		checkKeyBoardTouch(event);
+		return true;
+	}
+
+	private void checkKeyBoardTouch(MotionEvent event) {
+		if (event.getY() < dimensions.boardSide + dimensions.tileSide
+				|| event.getY() > dimensions.boardSide + 2
+						* dimensions.tileSide)
+			return;
+		int numberTouched = (int) (event.getX() / dimensions.tileSide) + 1;
+		setSelectedTile(numberTouched);
+	}
+
+	private void checkBoardTouch(MotionEvent event) {
+		if (event.getY() > dimensions.boardSide)
+			return;
+
 		int xTouched = (int) (event.getX() / dimensions.tileSide);
 		int yTouched = (int) (event.getY() / dimensions.tileSide);
-
 		puzzle.selectTile(xTouched, yTouched);
-		return true;
 	}
 }

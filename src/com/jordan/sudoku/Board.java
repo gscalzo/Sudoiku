@@ -1,6 +1,8 @@
 package com.jordan.sudoku;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -19,11 +21,15 @@ public class Board {
 	private Paint puzzle_selected;
 	int hintColors[];
 	private SudokuDimensions dimensions;
+	private Bitmap wood_table;
 
 	public Board(SudokuDimensions dimensions, SudokuModel puzzle,
 			Resources resources) {
 		this.dimensions = dimensions;
 		this.puzzle = puzzle;
+
+		wood_table = BitmapFactory.decodeResource(resources, R.drawable.table);
+
 		createPaints(resources);
 		createHintColors(resources);
 
@@ -67,8 +73,14 @@ public class Board {
 
 	private void drawKeyBoard(Canvas canvas) {
 		int upper = dimensions.boardSide + (int) dimensions.tileSide;
+
+		Rect src = new Rect(0, 0, wood_table.getWidth(), wood_table.getHeight());
+		Rect dst = new Rect(0, dimensions.boardSide, dimensions.boardSide,
+				dimensions.screenHeight);
+		canvas.drawBitmap(wood_table, src, dst, null);
 		canvas.drawRect(0, upper, dimensions.boardSide, upper
 				+ dimensions.tileSide, background);
+		
 		for (int i = 0; i < 9; ++i) {
 			canvas.drawLine(i * dimensions.tileSide, upper, i
 					* dimensions.tileSide, upper + dimensions.tileSide, light);
@@ -76,6 +88,9 @@ public class Board {
 					* dimensions.tileSide + 1, upper + dimensions.tileSide,
 					hilite);
 		}
+
+		canvas.drawLine(0, upper, dimensions.boardSide, upper, dark);
+		canvas.drawLine(0, upper+dimensions.tileSide, dimensions.boardSide, upper+dimensions.tileSide, dark);
 
 		float xTileCenter = dimensions.tileSide / 2;
 		float yTileCenter = dimensions.tileSide / 2 - (heightCenterOfText())

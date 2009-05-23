@@ -2,8 +2,6 @@ package com.jordan.sudoku;
 
 import java.util.Observable;
 
-import android.util.Log;
-
 import com.jordan.sudoku.util.Pair;
 
 public class SudokuModel extends Observable {
@@ -129,8 +127,8 @@ public class SudokuModel extends Observable {
 	public void selectTile(int x, int y) {
 		Pair previousPosition = new Pair(selectedTileX, selectedTileY);
 		setNewPosition(x, y);
-		Log.d(Game.TAG, "used[" + x + "][" + y + "] = "
-				+ toPuzzleString(used[x][y]));
+//		Log.d(Game.TAG, "used[" + x + "][" + y + "] = "
+//				+ toPuzzleString(used[x][y]));
 		notifyIfMoved(previousPosition);
 	}
 

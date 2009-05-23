@@ -30,7 +30,7 @@ public class PuzzleView extends View implements Observer{
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 
-		SudokuDimensions dimensions = new SudokuDimensions(getWidth());
+		SudokuDimensions dimensions = new SudokuDimensions(getWidth(),getHeight());
 		controller = new SudokuController(dimensions, puzzle);
 		board = new Board(dimensions, puzzle, getResources());
 	}
