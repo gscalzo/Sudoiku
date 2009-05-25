@@ -1,16 +1,18 @@
 package com.jordan.sudoku;
 
+import com.jordan.sudoku.util.Pair;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 public class SudokuController {
 	private SudokuModel puzzle;
-	private SudokuDimensions dimensions;
+	private BoardLayout board;
 
-	public SudokuController(SudokuDimensions dimensions, SudokuModel puzzle) {
+	public SudokuController(BoardLayout dimensions, SudokuModel puzzle) {
 		this.puzzle = puzzle;
-		this.dimensions = dimensions;
+		this.board = dimensions;
 	}
 
 	public boolean isKeyManaged(int keyCode, KeyEvent event) {
@@ -77,29 +79,38 @@ public class SudokuController {
 		if (event.getAction() != MotionEvent.ACTION_DOWN)
 			return false;
 
-		Log.d(Game.TAG, "onTouchEvent: x touch  " + event.getX() + ", y "
-				+ event.getY());
+		int x = (int) event.getX();
+		int y = (int) event.getY();
 
-		checkBoardTouch(event);
-		checkKeyBoardTouch(event);
+		Log.d(Game.TAG, "onTouchEvent: x touch  " + x + ", y " + y);
+
+		checkBoardTouch(x, y);
+		checkKeyBoardTouch(x, y);
 		return true;
 	}
 
-	private void checkKeyBoardTouch(MotionEvent event) {
-		if (event.getY() < dimensions.boardSide + dimensions.tileSide
-				|| event.getY() > dimensions.boardSide + 2
-						* dimensions.tileSide)
+	private void checkKeyBoardTouch(int x, int y) {
+		if (!board.isInKeyboard(x, y))
 			return;
-		int numberTouched = (int) (event.getX() / dimensions.tileSide) + 1;
-		setSelectedTile(numberTouched);
+
+		try {
+			setSelectedTile(board.touchedNumber(x));
+		} catch (SudokuException e) {
+			Log.e(Game.TAG, e.getMessage());
+		}
 	}
 
-	private void checkBoardTouch(MotionEvent event) {
-		if (event.getY() > dimensions.boardSide)
+	private void checkBoardTouch(int x, int y) {
+		if (!board.isInGrid(x, y))
 			return;
 
-		int xTouched = (int) (event.getX() / dimensions.tileSide);
-		int yTouched = (int) (event.getY() / dimensions.tileSide);
-		puzzle.selectTile(xTouched, yTouched);
+		Pair touchedTile = null;
+		try {
+			touchedTile = board.touchedTile(x, y);
+		} catch (SudokuException e) {
+			Log.e(Game.TAG, e.getMessage());
+			return;
+		}
+		puzzle.selectTile(touchedTile.a(), touchedTile.b());
 	}
 }

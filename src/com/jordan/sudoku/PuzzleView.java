@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class PuzzleView extends View implements Observer{
-	private Board board;
+	private BoardView board;
 
 	private SudokuModel puzzle;
 	private SudokuController controller;
@@ -30,9 +30,9 @@ public class PuzzleView extends View implements Observer{
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 
-		SudokuDimensions dimensions = new SudokuDimensions(getWidth(),getHeight());
+		BoardLayout dimensions = new BoardLayout(getWidth(),getHeight());
 		controller = new SudokuController(dimensions, puzzle);
-		board = new Board(dimensions, puzzle, getResources());
+		board = new BoardView(dimensions, puzzle, getResources());
 	}
 
 	@Override

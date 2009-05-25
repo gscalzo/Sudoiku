@@ -9,7 +9,7 @@ import android.graphics.Rect;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 
-public class Board {
+public class BoardView {
 
 	private Paint dark;
 	private Paint hilite;
@@ -20,15 +20,21 @@ public class Board {
 	private SudokuModel puzzle;
 	private Paint puzzle_selected;
 	int hintColors[];
-	private SudokuDimensions dimensions;
+	private BoardLayout boardLayout;
 	private Bitmap wood_table;
+	private Bitmap notes_enabled;
+	private Bitmap notes_disabled;
 
-	public Board(SudokuDimensions dimensions, SudokuModel puzzle,
+	public BoardView(BoardLayout boardLayout, SudokuModel puzzle,
 			Resources resources) {
-		this.dimensions = dimensions;
+		this.boardLayout = boardLayout;
 		this.puzzle = puzzle;
 
 		wood_table = BitmapFactory.decodeResource(resources, R.drawable.table);
+		notes_enabled = BitmapFactory.decodeResource(resources,
+				R.drawable.notes_enabled);
+		notes_disabled = BitmapFactory.decodeResource(resources,
+				R.drawable.notes_disabled);
 
 		createPaints(resources);
 		createHintColors(resources);
@@ -56,7 +62,7 @@ public class Board {
 		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
 		foreground.setColor(resources.getColor(color));
 		foreground.setStyle(Style.FILL);
-		foreground.setTextSize(dimensions.tileSide * 0.75f);
+		foreground.setTextSize(boardLayout.tileSide * 0.75f);
 		foreground.setTextAlign(Paint.Align.CENTER);
 		return foreground;
 	}
@@ -68,32 +74,47 @@ public class Board {
 		drawKeyBoard(canvas);
 		drawHints(canvas);
 		drawSelection(canvas);
+		drawButtons(canvas);
+	}
+
+	private void drawButtons(Canvas canvas) {
+		int upper = boardLayout.boardSide + 2 * (int) boardLayout.tileSide + 3;
+
+		Rect src = new Rect(0, 0, notes_enabled.getWidth(), notes_enabled
+				.getHeight());
+		Rect dst = new Rect(boardLayout.boardSide / 2, upper,
+				boardLayout.boardSide / 2+(int)boardLayout.tileSide, upper + (int) boardLayout.tileSide);
+
+		canvas.drawBitmap(notes_enabled, src, dst, null);
 
 	}
 
 	private void drawKeyBoard(Canvas canvas) {
-		int upper = dimensions.boardSide + (int) dimensions.tileSide;
+		int upper = boardLayout.boardSide + (int) boardLayout.tileSide;
 
 		Rect src = new Rect(0, 0, wood_table.getWidth(), wood_table.getHeight());
-		Rect dst = new Rect(0, dimensions.boardSide, dimensions.boardSide,
-				dimensions.screenHeight);
+		Rect dst = new Rect(0, boardLayout.boardSide, boardLayout.boardSide,
+				boardLayout.screenHeight);
 		canvas.drawBitmap(wood_table, src, dst, null);
-		canvas.drawRect(0, upper, dimensions.boardSide, upper
-				+ dimensions.tileSide, background);
-		
+		canvas.drawRect(0, upper, boardLayout.boardSide, upper
+				+ boardLayout.tileSide, background);
+
 		for (int i = 0; i < 9; ++i) {
-			canvas.drawLine(i * dimensions.tileSide, upper, i
-					* dimensions.tileSide, upper + dimensions.tileSide, light);
-			canvas.drawLine(i * dimensions.tileSide + 1, upper, i
-					* dimensions.tileSide + 1, upper + dimensions.tileSide,
+			canvas
+					.drawLine(i * boardLayout.tileSide, upper, i
+							* boardLayout.tileSide, upper
+							+ boardLayout.tileSide, light);
+			canvas.drawLine(i * boardLayout.tileSide + 1, upper, i
+					* boardLayout.tileSide + 1, upper + boardLayout.tileSide,
 					hilite);
 		}
 
-		canvas.drawLine(0, upper, dimensions.boardSide, upper, dark);
-		canvas.drawLine(0, upper+dimensions.tileSide, dimensions.boardSide, upper+dimensions.tileSide, dark);
+		canvas.drawLine(0, upper, boardLayout.boardSide, upper, dark);
+		canvas.drawLine(0, upper + boardLayout.tileSide, boardLayout.boardSide,
+				upper + boardLayout.tileSide, dark);
 
-		float xTileCenter = dimensions.tileSide / 2;
-		float yTileCenter = dimensions.tileSide / 2 - (heightCenterOfText())
+		float xTileCenter = boardLayout.tileSide / 2;
+		float yTileCenter = boardLayout.tileSide / 2 - (heightCenterOfText())
 				/ 2;
 		for (int currentNumber = 1; currentNumber <= 9; currentNumber++) {
 
@@ -105,7 +126,7 @@ public class Board {
 				color = givens_color;
 
 			canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
-					* dimensions.tileSide + xTileCenter, upper + yTileCenter,
+					* boardLayout.tileSide + xTileCenter, upper + yTileCenter,
 					color);
 		}
 	}
@@ -133,14 +154,14 @@ public class Board {
 	}
 
 	private void getTileRect(int x, int y, Rect rect) {
-		rect.set((int) (x * dimensions.tileSide),
-				(int) (y * dimensions.tileSide),
-				(int) (x * dimensions.tileSide + dimensions.tileSide), (int) (y
-						* dimensions.tileSide + dimensions.tileSide));
+		rect.set((int) (x * boardLayout.tileSide),
+				(int) (y * boardLayout.tileSide), (int) (x
+						* boardLayout.tileSide + boardLayout.tileSide),
+				(int) (y * boardLayout.tileSide + boardLayout.tileSide));
 	}
 
 	private void drawBackground(Canvas canvas) {
-		canvas.drawRect(0, 0, dimensions.boardSide, dimensions.boardSide,
+		canvas.drawRect(0, 0, boardLayout.boardSide, boardLayout.boardSide,
 				background);
 	}
 
@@ -158,17 +179,17 @@ public class Board {
 	}
 
 	private void drawVerticalLine(Canvas canvas, Paint color, int i) {
-		canvas.drawLine(i * dimensions.tileSide, 0, i * dimensions.tileSide,
-				dimensions.boardSide, color);
-		canvas.drawLine(i * dimensions.tileSide + 1, 0, i * dimensions.tileSide
-				+ 1, dimensions.boardSide, hilite);
+		canvas.drawLine(i * boardLayout.tileSide, 0, i * boardLayout.tileSide,
+				boardLayout.boardSide, color);
+		canvas.drawLine(i * boardLayout.tileSide + 1, 0, i
+				* boardLayout.tileSide + 1, boardLayout.boardSide, hilite);
 	}
 
 	private void drawHorizontalLine(Canvas canvas, Paint color, int i) {
-		canvas.drawLine(0, i * dimensions.tileSide, dimensions.boardSide, i
-				* dimensions.tileSide, color);
-		canvas.drawLine(0, i * dimensions.tileSide + 1, dimensions.boardSide, i
-				* dimensions.tileSide + 1, hilite);
+		canvas.drawLine(0, i * boardLayout.tileSide, boardLayout.boardSide, i
+				* boardLayout.tileSide, color);
+		canvas.drawLine(0, i * boardLayout.tileSide + 1, boardLayout.boardSide,
+				i * boardLayout.tileSide + 1, hilite);
 	}
 
 	private Paint createPaint(int color, Resources resources) {
@@ -178,8 +199,8 @@ public class Board {
 	}
 
 	private void drawNumbers(Canvas canvas) {
-		float xTileCenter = dimensions.tileSide / 2;
-		float yTileCenter = dimensions.tileSide / 2 - (heightCenterOfText())
+		float xTileCenter = boardLayout.tileSide / 2;
+		float yTileCenter = boardLayout.tileSide / 2 - (heightCenterOfText())
 				/ 2;
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
@@ -189,8 +210,8 @@ public class Board {
 					color = givens_color;
 
 				canvas.drawText(currentTile.valueAsString(), col
-						* dimensions.tileSide + xTileCenter, row
-						* dimensions.tileSide + yTileCenter, color);
+						* boardLayout.tileSide + xTileCenter, row
+						* boardLayout.tileSide + yTileCenter, color);
 			}
 		}
 	}
