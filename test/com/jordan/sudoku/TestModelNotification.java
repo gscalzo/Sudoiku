@@ -12,10 +12,13 @@ import org.junit.Test;
 public class TestModelNotification {
 
 	private SudokuModel model;
+	private MockObserver canary;
 
 	@Before
 	public void createTestContext() {
 		model = new SudokuModel(Game.DIFFICULTY_EASY, new MySudokuGenerator());
+		canary = new MockObserver();
+		model.addObserver(canary);
 	}
 
 	class MockObserver implements Observer {
@@ -29,28 +32,31 @@ public class TestModelNotification {
 
 	@Test
 	public void modelShouldNotifyWhenSelectionIsMoved() {
-		MockObserver canary = new MockObserver();
-		model.addObserver(canary);
-
 		model.moveSelection(1, 1);
 		assertTrue(canary.observed);
 	}
 
 	@Test
 	public void modelShouldNotNotifyWhenSelectionIsntReallyMoved() {
-		MockObserver canary = new MockObserver();
-		model.addObserver(canary);
-
 		model.moveSelection(0, 0);
 		assertFalse(canary.observed);
 	}
 
 	@Test
 	public void modelShouldNotifyWhenANewNumberIsInserted() {
-		MockObserver canary = new MockObserver();
-		model.addObserver(canary);
-
 		assertTrue(model.setValueToTileIfValid(2, 0, 2));
+		assertTrue(canary.observed);
+	}
+
+	@Test
+	public void modelShouldNotifyWhenGoesInNotesMode() {
+		model.setInNotesMode();
+		assertTrue(canary.observed);
+	}
+
+	@Test
+	public void modelShouldNotifyWhenGoesInNumbersMode() {
+		model.setInNumbersMode();
 		assertTrue(canary.observed);
 	}
 }

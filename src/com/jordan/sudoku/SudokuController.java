@@ -32,41 +32,41 @@ public class SudokuController {
 		case KeyEvent.KEYCODE_0:
 			return true;
 		case KeyEvent.KEYCODE_SPACE:
-			setSelectedTile(0);
+			setValueToSelectedTile(0);
 			return true;
 		case KeyEvent.KEYCODE_1:
-			setSelectedTile(1);
+			setValueToSelectedTile(1);
 			return true;
 		case KeyEvent.KEYCODE_2:
-			setSelectedTile(2);
+			setValueToSelectedTile(2);
 			return true;
 		case KeyEvent.KEYCODE_3:
-			setSelectedTile(3);
+			setValueToSelectedTile(3);
 			return true;
 		case KeyEvent.KEYCODE_4:
-			setSelectedTile(4);
+			setValueToSelectedTile(4);
 			return true;
 		case KeyEvent.KEYCODE_5:
-			setSelectedTile(5);
+			setValueToSelectedTile(5);
 			return true;
 		case KeyEvent.KEYCODE_6:
-			setSelectedTile(6);
+			setValueToSelectedTile(6);
 			return true;
 		case KeyEvent.KEYCODE_7:
-			setSelectedTile(7);
+			setValueToSelectedTile(7);
 			return true;
 		case KeyEvent.KEYCODE_8:
-			setSelectedTile(8);
+			setValueToSelectedTile(8);
 			return true;
 		case KeyEvent.KEYCODE_9:
-			setSelectedTile(9);
+			setValueToSelectedTile(9);
 			return true;
 		default:
 			return false;
 		}
 	}
 
-	public boolean setSelectedTile(int tile) {
+	public boolean setValueToSelectedTile(int tile) {
 		Tile selected = puzzle.selectedTile();
 		return puzzle.setValueToTileIfValid(selected.x(), selected.y(), tile);
 	}
@@ -86,7 +86,27 @@ public class SudokuController {
 
 		checkBoardTouch(x, y);
 		checkKeyBoardTouch(x, y);
+		checkButtonBoardTouch(x, y);
 		return true;
+	}
+
+	private void checkButtonBoardTouch(int x, int y) {
+		if (!board.isInButtonsBoard(x, y))
+			return;
+
+		try {
+			int button = board.touchedButton(x);
+			if (button == Tile.NOTES_BUTTON) {
+				if (puzzle.isNotesMode())
+					puzzle.setInNumbersMode();
+				else
+					puzzle.setInNotesMode();
+			} else {
+				setValueToSelectedTile(0);
+			}
+		} catch (SudokuException e) {
+			Log.e(Game.TAG, e.getMessage());
+		}
 	}
 
 	private void checkKeyBoardTouch(int x, int y) {
@@ -94,7 +114,7 @@ public class SudokuController {
 			return;
 
 		try {
-			setSelectedTile(board.touchedNumber(x));
+			setValueToSelectedTile(board.touchedNumber(x));
 		} catch (SudokuException e) {
 			Log.e(Game.TAG, e.getMessage());
 		}

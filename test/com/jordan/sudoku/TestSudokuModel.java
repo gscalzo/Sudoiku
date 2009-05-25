@@ -6,8 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,4 +51,22 @@ public class TestSudokuModel {
 		}
 	}
 
+	@Test
+	public void asDefaultModelShouldBeInNumbersMode() {
+		assertFalse(model.isNotesMode());
+	}
+
+	@Test
+	public void whenNotesModeSelectedModelShouldBeInNotesMode() {
+		model.setInNotesMode();
+		assertTrue(model.isNotesMode());
+	}
+
+	@Test
+	public void whenNotesModeThanNumbersModeIsSelectedModelShouldNotBeBeInNotesMode() {
+		model.setInNotesMode();
+		assertTrue(model.isNotesMode());
+		model.setInNumbersMode();
+		assertFalse(model.isNotesMode());
+	}
 }

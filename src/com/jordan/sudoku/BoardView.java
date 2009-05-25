@@ -24,6 +24,7 @@ public class BoardView {
 	private Bitmap wood_table;
 	private Bitmap notes_enabled;
 	private Bitmap notes_disabled;
+	private Bitmap eraser;
 
 	public BoardView(BoardLayout boardLayout, SudokuModel puzzle,
 			Resources resources) {
@@ -35,6 +36,7 @@ public class BoardView {
 				R.drawable.notes_enabled);
 		notes_disabled = BitmapFactory.decodeResource(resources,
 				R.drawable.notes_disabled);
+		eraser = BitmapFactory.decodeResource(resources, R.drawable.eraser);
 
 		createPaints(resources);
 		createHintColors(resources);
@@ -79,14 +81,29 @@ public class BoardView {
 
 	private void drawButtons(Canvas canvas) {
 		int upper = boardLayout.boardSide + 2 * (int) boardLayout.tileSide + 3;
+		drawNotesButton(canvas, upper);
+		drawEraserButton(canvas, upper);
+	}
 
-		Rect src = new Rect(0, 0, notes_enabled.getWidth(), notes_enabled
+	private void drawNotesButton(Canvas canvas, int upper) {
+		Bitmap notes_button = notes_disabled;
+		if (puzzle.isNotesMode())
+			notes_button = notes_enabled;
+
+		Rect src = new Rect(0, 0, notes_button.getWidth(), notes_button
 				.getHeight());
 		Rect dst = new Rect(boardLayout.boardSide / 2, upper,
-				boardLayout.boardSide / 2+(int)boardLayout.tileSide, upper + (int) boardLayout.tileSide);
+				boardLayout.boardSide / 2 + (int) boardLayout.tileSide, upper
+						+ (int) boardLayout.tileSide);
+		canvas.drawBitmap(notes_button, src, dst, null);
+	}
 
-		canvas.drawBitmap(notes_enabled, src, dst, null);
-
+	private void drawEraserButton(Canvas canvas, int upper) {
+		Rect src = new Rect(0, 0, eraser.getWidth(), eraser.getHeight());
+		Rect dst = new Rect(boardLayout.boardSide / 2
+				- (int) boardLayout.tileSide, upper, boardLayout.boardSide / 2,
+				upper + (int) boardLayout.tileSide);
+		canvas.drawBitmap(eraser, src, dst, null);
 	}
 
 	private void drawKeyBoard(Canvas canvas) {

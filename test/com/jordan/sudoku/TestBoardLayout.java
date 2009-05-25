@@ -68,9 +68,23 @@ public class TestBoardLayout {
 	}
 
 	@Test(expected=SudokuException.class)
-	public void anExceptionShouldBeThrownIfOffKeyoard() throws SudokuException {
+	public void anExceptionShouldBeThrownIfOffKeyBoard() throws SudokuException {
 		layout.touchedNumber(188);
 	}
-
 	
+	@Test
+	public void aPointShouldBeInsideButtonsBoardIfInButtonsBoard() {
+		assertTrue(layout.isInButtonsBoard(41, 111));
+	}
+	
+	@Test
+	public void theButtonShouldBeReturned() throws SudokuException {
+		assertEquals(Tile.ERASE_BUTTON, layout.touchedButton(41));
+		assertEquals(Tile.NOTES_BUTTON, layout.touchedButton(47));
+	}
+
+	@Test(expected=SudokuException.class)
+	public void anExceptionShouldBeThrownIfOffButtonsBoard() throws SudokuException {
+		layout.touchedButton(20);
+	}
 }

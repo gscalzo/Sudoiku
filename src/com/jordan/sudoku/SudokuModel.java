@@ -14,6 +14,8 @@ public class SudokuModel extends Observable {
 
 	private SudokuGenerator sudokuGenerator = new StaticSudokuGenerator();
 
+	private boolean notesMode;
+
 	public SudokuModel(int diff) {
 		init(diff);
 	}
@@ -116,19 +118,18 @@ public class SudokuModel extends Observable {
 	}
 
 	static private String toPuzzleString(int[] puz) {
-		   StringBuilder buf = new StringBuilder();
-		   for (int element : puz) {
-		      buf.append(element);
-		   }
-		   return buf.toString();
+		StringBuilder buf = new StringBuilder();
+		for (int element : puz) {
+			buf.append(element);
 		}
+		return buf.toString();
+	}
 
-	
 	public void selectTile(int x, int y) {
 		Pair previousPosition = new Pair(selectedTileX, selectedTileY);
 		setNewPosition(x, y);
-//		Log.d(Game.TAG, "used[" + x + "][" + y + "] = "
-//				+ toPuzzleString(used[x][y]));
+		// Log.d(Game.TAG, "used[" + x + "][" + y + "] = "
+		// + toPuzzleString(used[x][y]));
 		notifyIfMoved(previousPosition);
 	}
 
@@ -151,6 +152,24 @@ public class SudokuModel extends Observable {
 
 	public Tile selectedTile() {
 		return getTile(selectedTileX, selectedTileY);
+	}
+
+	public boolean isNotesMode() {
+		return notesMode;
+	}
+
+	public void setInNotesMode() {
+		setNotesMode(true);
+	}
+
+	private void setNotesMode(boolean value) {
+		notesMode = value;
+		setChanged();
+		notifyObservers();
+	}
+
+	public void setInNumbersMode() {
+		setNotesMode(false);
 	}
 
 }
