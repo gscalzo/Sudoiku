@@ -66,7 +66,9 @@ public class TestSudokuModel {
 	public void whenNotesModeThanNumbersModeIsSelectedModelShouldNotBeBeInNotesMode() {
 		model.setInNotesMode();
 		assertTrue(model.isNotesMode());
+		assertFalse(model.isNumbersMode());
 		model.setInNumbersMode();
+		assertTrue(model.isNumbersMode());
 		assertFalse(model.isNotesMode());
 	}
 }

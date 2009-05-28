@@ -48,15 +48,64 @@ public class TestTile {
 
 	@Test
 	public void aNotGivenTileShouldBeModifiedIfPossibile() {
-		assertTrue(model.setValueToTileIfValid(2, 0, 2));
+		model.setValueToTile(2, 0, 2);
 		Tile tile = model.getTile(2, 0);
 		assertEquals(2, tile.value());
 	}
 
 	@Test
 	public void aGivenTileShouldNotBePossibleModify() {
-		assertFalse(model.setValueToTileIfValid(1, 0, 7));
+		model.setValueToTile(1, 0, 7);
 		Tile tile = model.getTile(1, 0);
 		assertEquals(6, tile.value());
 	}
+
+	@Test
+	public void itShouldBePossibleAskATilesNote() {
+		Tile tile = model.getTile(1, 0);
+		assertFalse(tile.noteActiveAt(3));
+	}
+
+	@Test
+	public void itShouldBePossibleAddANoteToATile() {
+		Tile tile = model.getTile(1, 0);
+		assertFalse(tile.noteActiveAt(3));
+		tile.toggleNoteAt(3);
+		assertTrue(tile.noteActiveAt(3));
+	}
+
+	@Test
+	public void itShouldBePossibleAddANoteToTileBoundairies() {
+		Tile tile = model.getTile(1, 0);
+		assertFalse(tile.noteActiveAt(1));
+		tile.toggleNoteAt(1);
+		assertTrue(tile.noteActiveAt(1));
+		assertFalse(tile.noteActiveAt(9));
+		tile.toggleNoteAt(9);
+		assertTrue(tile.noteActiveAt(9));
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void itShouldNotBePossibleAddANoteOffLowBoundairy() {
+		model.getTile(1, 0).toggleNoteAt(0);
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void itShouldNotBePossibleAddANoteOffUpBoundairy() {
+		model.getTile(1, 0).toggleNoteAt(10);
+	}
+
+	@Test
+	public void valueZeroShouldResetAllNotes() {
+		Tile tile = model.getTile(1, 0);
+		for (int i = 1; i <= 9; ++i)
+			tile.toggleNoteAt(i);
+		for (int i = 1; i <= 9; ++i)
+			assertTrue(tile.noteActiveAt(i));
+		tile.resetNotes();
+
+		for (int i = 1; i <= 9; ++i)
+			assertFalse(tile.noteActiveAt(i));
+	}
+
 }

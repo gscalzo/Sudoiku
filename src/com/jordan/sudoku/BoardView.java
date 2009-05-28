@@ -16,6 +16,7 @@ public class BoardView {
 	private Paint light;
 	private Paint background;
 	private Paint foreground;
+	private Paint notes;
 	private Paint givens_color;
 	private SudokuModel puzzle;
 	private Paint puzzle_selected;
@@ -25,6 +26,7 @@ public class BoardView {
 	private Bitmap notes_enabled;
 	private Bitmap notes_disabled;
 	private Bitmap eraser;
+	private Bitmap solve;
 
 	public BoardView(BoardLayout boardLayout, SudokuModel puzzle,
 			Resources resources) {
@@ -37,6 +39,7 @@ public class BoardView {
 		notes_disabled = BitmapFactory.decodeResource(resources,
 				R.drawable.notes_disabled);
 		eraser = BitmapFactory.decodeResource(resources, R.drawable.eraser);
+		solve = BitmapFactory.decodeResource(resources, R.drawable.solve);
 
 		createPaints(resources);
 		createHintColors(resources);
@@ -56,15 +59,19 @@ public class BoardView {
 		background = createPaint(R.color.puzzle_background, resources);
 		puzzle_selected = createPaint(R.color.puzzle_selected, resources);
 
-		foreground = createNumbersPaint(resources, R.color.puzzle_foreground);
-		givens_color = createNumbersPaint(resources, R.color.puzzle_given);
+		foreground = createNumbersPaint(resources, R.color.puzzle_foreground,
+				boardLayout.tileSide);
+		givens_color = createNumbersPaint(resources, R.color.puzzle_given,
+				boardLayout.tileSide);
+		notes = createNumbersPaint(resources, R.color.puzzle_notes,
+				boardLayout.tileSide / 3f);
 	}
 
-	private Paint createNumbersPaint(Resources resources, int color) {
+	private Paint createNumbersPaint(Resources resources, int color, float size) {
 		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
 		foreground.setColor(resources.getColor(color));
 		foreground.setStyle(Style.FILL);
-		foreground.setTextSize(boardLayout.tileSide * 0.75f);
+		foreground.setTextSize(size * 0.75f);
 		foreground.setTextAlign(Paint.Align.CENTER);
 		return foreground;
 	}
@@ -73,7 +80,8 @@ public class BoardView {
 		drawBackground(canvas);
 		drawLines(canvas);
 		drawNumbers(canvas);
-		drawKeyBoard(canvas);
+		drawNotes(canvas);
+		drawNumberBoard(canvas);
 		drawHints(canvas);
 		drawSelection(canvas);
 		drawButtons(canvas);
@@ -83,6 +91,7 @@ public class BoardView {
 		int upper = boardLayout.boardSide + 2 * (int) boardLayout.tileSide + 3;
 		drawNotesButton(canvas, upper);
 		drawEraserButton(canvas, upper);
+		drawSolveButton(canvas, upper);
 	}
 
 	private void drawNotesButton(Canvas canvas, int upper) {
@@ -106,7 +115,16 @@ public class BoardView {
 		canvas.drawBitmap(eraser, src, dst, null);
 	}
 
-	private void drawKeyBoard(Canvas canvas) {
+	private void drawSolveButton(Canvas canvas, int upper) {
+		Rect src = new Rect(0, 0, solve.getWidth(), solve.getHeight());
+		Rect dst = new Rect(boardLayout.boardSide / 2
+				+ (int) boardLayout.tileSide, upper, boardLayout.boardSide / 2
+				+ (int) boardLayout.tileSide * 2, upper
+				+ (int) boardLayout.tileSide);
+		canvas.drawBitmap(solve, src, dst, null);
+	}
+
+	private void drawNumberBoard(Canvas canvas) {
 		int upper = boardLayout.boardSide + (int) boardLayout.tileSide;
 
 		Rect src = new Rect(0, 0, wood_table.getWidth(), wood_table.getHeight());
@@ -134,18 +152,43 @@ public class BoardView {
 		float yTileCenter = boardLayout.tileSide / 2 - (heightCenterOfText())
 				/ 2;
 		for (int currentNumber = 1; currentNumber <= 9; currentNumber++) {
-
-			Paint color = foreground;
-			Tile selectedTile = puzzle.selectedTile();
-			if (selectedTile.isGiven()
-					|| puzzle.isUsed(selectedTile.x(), selectedTile.y(),
-							currentNumber))
-				color = givens_color;
-
-			canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
-					* boardLayout.tileSide + xTileCenter, upper + yTileCenter,
-					color);
+			drawInNumbersMode(canvas, upper, xTileCenter, yTileCenter,
+					currentNumber);
+			drawInNotesMode(canvas, upper, xTileCenter, yTileCenter,
+					currentNumber);
 		}
+	}
+
+	private void drawInNumbersMode(Canvas canvas, int upper, float xTileCenter,
+			float yTileCenter, int currentNumber) {
+		if (puzzle.isNotesMode())
+			return;
+
+		Paint color = foreground;
+		Tile selectedTile = puzzle.selectedTile();
+		if (selectedTile.isGiven()
+				|| puzzle.isUsed(selectedTile.x(), selectedTile.y(),
+						currentNumber))
+			color = givens_color;
+
+		canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
+				* boardLayout.tileSide + xTileCenter, upper + yTileCenter,
+				color);
+	}
+
+	private void drawInNotesMode(Canvas canvas, int upper, float xTileCenter,
+			float yTileCenter, int currentNumber) {
+		if (puzzle.isNumbersMode())
+			return;
+
+		Paint color = givens_color;
+		Tile selectedTile = puzzle.selectedTile();
+		if (selectedTile.noteActiveAt(currentNumber))
+			color = foreground;
+
+		canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
+				* boardLayout.tileSide + xTileCenter, upper + yTileCenter,
+				color);
 	}
 
 	private void drawSelection(Canvas canvas) {
@@ -229,6 +272,34 @@ public class BoardView {
 				canvas.drawText(currentTile.valueAsString(), col
 						* boardLayout.tileSide + xTileCenter, row
 						* boardLayout.tileSide + yTileCenter, color);
+			}
+		}
+	}
+
+	private void drawNotes(Canvas canvas) {
+		float xNoteCenter = boardLayout.tileSide / 6f;
+		float yNoteCenter = (boardLayout.tileSide - heightCenterOfText()) / 6f;
+		int noteSide = (int) (boardLayout.tileSide / 3f);
+
+		for (int col = 0; col < 9; col++) {
+			for (int row = 0; row < 9; row++) {
+				Tile currentTile = puzzle.getTile(col, row);
+				if (currentTile.value() != 0)
+					continue;
+
+				int topTile = (int) (row * boardLayout.tileSide);
+				int leftTile = (int) (col * boardLayout.tileSide);
+
+				Paint color = notes;
+				for (int yNote = 0; yNote < 3; ++yNote) {
+					for (int xNote = 0; xNote < 3; ++xNote) {
+						int value = xNote + 1 + yNote * 3;
+						if (currentTile.noteActiveAt(value))
+							canvas.drawText(String.valueOf(value), leftTile
+									+ xNote * noteSide + xNoteCenter, topTile
+									+ yNote * noteSide + yNoteCenter, color);
+					}
+				}
 			}
 		}
 	}

@@ -20,11 +20,12 @@ public final class R {
         public static final int puzzle_foreground=0x7f060005;
         public static final int puzzle_given=0x7f060006;
         public static final int puzzle_hilite=0x7f060002;
-        public static final int puzzle_hint_0=0x7f060007;
-        public static final int puzzle_hint_1=0x7f060008;
-        public static final int puzzle_hint_2=0x7f060009;
+        public static final int puzzle_hint_0=0x7f060008;
+        public static final int puzzle_hint_1=0x7f060009;
+        public static final int puzzle_hint_2=0x7f06000a;
         public static final int puzzle_light=0x7f060003;
-        public static final int puzzle_selected=0x7f06000a;
+        public static final int puzzle_notes=0x7f060007;
+        public static final int puzzle_selected=0x7f06000b;
     }
     public static final class drawable {
         public static final int eraser=0x7f020000;
@@ -32,7 +33,8 @@ public final class R {
         public static final int notes=0x7f020002;
         public static final int notes_disabled=0x7f020003;
         public static final int notes_enabled=0x7f020004;
-        public static final int table=0x7f020005;
+        public static final int solve=0x7f020005;
+        public static final int table=0x7f020006;
     }
     public static final class id {
         public static final int about_button=0x7f090004;

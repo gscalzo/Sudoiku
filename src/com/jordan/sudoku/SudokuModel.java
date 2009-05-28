@@ -42,15 +42,34 @@ public class SudokuModel extends Observable {
 		return used[x][y];
 	}
 
-	public boolean setValueToTileIfValid(int x, int y, int value) {
+	public void setValueToTile(int x, int y, int value) {
+		if (isNumbersMode())
+			setNumberToTile(x, y, value);
+		else
+			setNoteToTile(x, y, value);
+	}
+
+	public void resetNotes() {
+		selectedTile().resetNotes();
+		setChanged();
+		notifyObservers();
+	}
+
+	private void setNumberToTile(int x, int y, int value) {
 		if (getTile(x, y).isGiven() || isUsed(x, y, value))
-			return false;
+			return;
 
 		setTile(x, y, value);
 		calculateUsedTiles();
 		setChanged();
 		notifyObservers();
-		return true;
+	}
+
+	private void setNoteToTile(int x, int y, int value) {
+		Tile tile = getTile(x, y);
+		tile.toggleNoteAt(value);
+		setChanged();
+		notifyObservers();
 	}
 
 	public boolean isUsed(int x, int y, int value) {
@@ -170,6 +189,24 @@ public class SudokuModel extends Observable {
 
 	public void setInNumbersMode() {
 		setNotesMode(false);
+	}
+
+	public boolean isNumbersMode() {
+		return !notesMode;
+	}
+
+	public void solve() {
+//		char[] puzzle = new char[81];
+//		for (int i = 0; i < 81; ++i) {
+//			puzzle[i] = (char) ((char) (this.puzzle[i].value()) + '0');
+//		}
+//		S.A = puzzle;
+//		S.R();
+//		for (int i = 0; i < 81; ++i) {
+//			this.puzzle[i].setValue(puzzle[i] - '0');
+//		}
+//		setChanged();
+//		notifyObservers();
 	}
 
 }

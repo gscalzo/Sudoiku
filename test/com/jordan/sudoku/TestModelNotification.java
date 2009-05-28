@@ -44,7 +44,7 @@ public class TestModelNotification {
 
 	@Test
 	public void modelShouldNotifyWhenANewNumberIsInserted() {
-		assertTrue(model.setValueToTileIfValid(2, 0, 2));
+		model.setValueToTile(2, 0, 2);
 		assertTrue(canary.observed);
 	}
 
@@ -57,6 +57,12 @@ public class TestModelNotification {
 	@Test
 	public void modelShouldNotifyWhenGoesInNumbersMode() {
 		model.setInNumbersMode();
+		assertTrue(canary.observed);
+	}
+
+	@Test
+	public void modelShouldNotifyWhenNotesAreReset() {
+		model.resetNotes();
 		assertTrue(canary.observed);
 	}
 }

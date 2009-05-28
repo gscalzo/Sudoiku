@@ -40,7 +40,7 @@ public class TestBoardLayout {
 		assertEquals(2, touchedTile.b());
 	}
 
-	@Test(expected=SudokuException.class)
+	@Test(expected = SudokuException.class)
 	public void anExceptionShouldBeThrownIfOffGrid() throws SudokuException {
 		layout.touchedTile(10, 95);
 	}
@@ -49,17 +49,17 @@ public class TestBoardLayout {
 	public void aPointShouldBeInsideKeyBoardIfInKeyboard() {
 		assertTrue(layout.isInKeyboard(80, 100));
 
-	}	
+	}
 
 	@Test
 	public void aPointShouldBeOutsideKeyBoardIfYIsOffKeyboard() {
 		assertFalse(layout.isInKeyboard(80, 90));
-	}	
+	}
 
 	@Test
 	public void aPointShouldBeOutsideKeyBoardIfXIsOffKeyboard() {
 		assertFalse(layout.isInKeyboard(100, 100));
-	}	
+	}
 
 	@Test
 	public void theTouchedNumberShouldBeReturned() throws SudokuException {
@@ -67,24 +67,26 @@ public class TestBoardLayout {
 		assertEquals(9, layout.touchedNumber(88));
 	}
 
-	@Test(expected=SudokuException.class)
+	@Test(expected = SudokuException.class)
 	public void anExceptionShouldBeThrownIfOffKeyBoard() throws SudokuException {
 		layout.touchedNumber(188);
 	}
-	
+
 	@Test
 	public void aPointShouldBeInsideButtonsBoardIfInButtonsBoard() {
-		assertTrue(layout.isInButtonsBoard(41, 111));
+		assertTrue(layout.isInButtonsBoard(41, 101));
 	}
-	
+
 	@Test
 	public void theButtonShouldBeReturned() throws SudokuException {
 		assertEquals(Tile.ERASE_BUTTON, layout.touchedButton(41));
 		assertEquals(Tile.NOTES_BUTTON, layout.touchedButton(47));
+		assertEquals(Tile.SOLVE_BUTTON, layout.touchedButton(57));
 	}
 
-	@Test(expected=SudokuException.class)
-	public void anExceptionShouldBeThrownIfOffButtonsBoard() throws SudokuException {
+	@Test(expected = SudokuException.class)
+	public void anExceptionShouldBeThrownIfOffButtonsBoard()
+			throws SudokuException {
 		layout.touchedButton(20);
 	}
 }

@@ -66,9 +66,9 @@ public class SudokuController {
 		}
 	}
 
-	public boolean setValueToSelectedTile(int tile) {
+	public void setValueToSelectedTile(int tile) {
 		Tile selected = puzzle.selectedTile();
-		return puzzle.setValueToTileIfValid(selected.x(), selected.y(), tile);
+		puzzle.setValueToTile(selected.x(), selected.y(), tile);
 	}
 
 	private void moveSelection(int diffX, int diffY) {
@@ -84,7 +84,7 @@ public class SudokuController {
 
 		Log.d(Game.TAG, "onTouchEvent: x touch  " + x + ", y " + y);
 
-		checkBoardTouch(x, y);
+		checkGridTouch(x, y);
 		checkKeyBoardTouch(x, y);
 		checkButtonBoardTouch(x, y);
 		return true;
@@ -101,8 +101,15 @@ public class SudokuController {
 					puzzle.setInNumbersMode();
 				else
 					puzzle.setInNotesMode();
-			} else {
-				setValueToSelectedTile(0);
+			}
+			if (button == Tile.ERASE_BUTTON) {
+				if (puzzle.isNotesMode())
+					puzzle.resetNotes();
+				else
+					setValueToSelectedTile(0);
+			}
+			if (button == Tile.SOLVE_BUTTON) {
+				puzzle.solve();
 			}
 		} catch (SudokuException e) {
 			Log.e(Game.TAG, e.getMessage());
@@ -120,7 +127,7 @@ public class SudokuController {
 		}
 	}
 
-	private void checkBoardTouch(int x, int y) {
+	private void checkGridTouch(int x, int y) {
 		if (!board.isInGrid(x, y))
 			return;
 
