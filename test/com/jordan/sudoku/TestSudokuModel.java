@@ -10,7 +10,10 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jordan.sudoku.util.Pair;
+import com.rubberdroid.sudoiku.Sudoiku;
+import com.rubberdroid.sudoiku.model.SudokuModel;
+import com.rubberdroid.sudoiku.model.Tile;
+import com.rubberdroid.sudoku.util.Pair;
 
 public class TestSudokuModel {
 
@@ -18,7 +21,8 @@ public class TestSudokuModel {
 
 	@Before
 	public void createTestContext() {
-		model = new SudokuModel(Game.DIFFICULTY_EASY, new MySudokuGenerator());
+		model = new SudokuModel(Sudoiku.DIFFICULTY_EASY,
+				new MySudokuGenerator());
 	}
 
 	@Test
@@ -47,7 +51,8 @@ public class TestSudokuModel {
 			model.moveSelection(move.a(), move.b());
 			Tile selectedTile = model.selectedTile();
 			Tile expectedSelected = values.get(move);
-			assertEquals(expectedSelected, selectedTile);
+			assertEquals(expectedSelected.x(), selectedTile.x());
+			assertEquals(expectedSelected.y(), selectedTile.y());
 		}
 	}
 
@@ -71,4 +76,6 @@ public class TestSudokuModel {
 		assertTrue(model.isNumbersMode());
 		assertFalse(model.isNotesMode());
 	}
+
+
 }

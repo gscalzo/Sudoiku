@@ -4,15 +4,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import com.rubberdroid.sudoiku.Sudoiku;
+import com.rubberdroid.sudoiku.model.SudokuModel;
+import com.rubberdroid.sudoiku.model.Tile;
 
 public class TestTile {
 	private SudokuModel model;
 
 	@Before
 	public void createTestContext() {
-		model = new SudokuModel(Game.DIFFICULTY_EASY, new MySudokuGenerator());
+		model = new SudokuModel(Sudoiku.DIFFICULTY_EASY,
+				new MySudokuGenerator());
 	}
 
 	@Test
@@ -106,6 +115,51 @@ public class TestTile {
 
 		for (int i = 1; i <= 9; ++i)
 			assertFalse(tile.noteActiveAt(i));
+	}
+
+	@Test
+	public void aTileShouldBeEqualsToAnotherIfPositionAndValueAreEqual() {
+		assertFalse(new Tile(1, 2, 3).equals(new Tile(1, 2, 4)));
+		assertTrue(new Tile(1, 2, 3).equals(new Tile(1, 2, 3)));
+	}
+
+	@Test
+	public void aTileShouldBeEqualsToAnotherIfPositionValueAndGivenessAreEqual() {
+		Tile givenOne = new Tile(1, 2, 3);
+		Tile notGivenOne = new Tile(1, 2, 0);
+		notGivenOne.setValue(3);
+		assertFalse(givenOne.equals(notGivenOne));
+		Tile notGivenTwo = new Tile(1, 2, 0);
+		notGivenTwo.setValue(3);
+		assertTrue(notGivenTwo.equals(notGivenOne));
+	}
+
+	@Test
+	public void aTileShouldBeEqualsToAnotherIfPositionValueGivenessAndNotesAreEqual() {
+		Tile notGivenOne = new Tile(1, 2, 0);
+		Tile notGivenTwo = new Tile(1, 2, 0);
+		notGivenTwo.toggleNoteAt(1);
+		notGivenTwo.toggleNoteAt(3);
+		assertFalse(notGivenTwo.equals(notGivenOne));
+	}
+
+	@Test
+	public void aTileShouldBeSerializable() throws IOException,
+			ClassNotFoundException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		Tile originalTile = createATile();
+		Serializer.serialize(originalTile, baos);
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		Tile deserializedTile = (Tile) Serializer.deserialize(bais);
+		assertTrue(deserializedTile.equals(originalTile));
+	}
+
+	private Tile createATile() {
+		Tile aTile = new Tile(1, 2, 0);
+		aTile.setValue(3);
+		aTile.toggleNoteAt(1);
+		aTile.toggleNoteAt(3);
+		return aTile;
 	}
 
 }

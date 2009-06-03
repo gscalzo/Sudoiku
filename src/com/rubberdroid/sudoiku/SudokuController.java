@@ -1,17 +1,21 @@
-package com.jordan.sudoku;
-
-import com.jordan.sudoku.util.Pair;
+package com.rubberdroid.sudoiku;
 
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.rubberdroid.sudoiku.exception.SudokuException;
+import com.rubberdroid.sudoiku.model.SudokuModel;
+import com.rubberdroid.sudoiku.model.Tile;
+import com.rubberdroid.sudoiku.view.BoardLayout;
+import com.rubberdroid.sudoku.util.Pair;
+
 public class SudokuController {
-	private SudokuModel puzzle;
+	private SudokuModel sudokuModel;
 	private BoardLayout board;
 
 	public SudokuController(BoardLayout dimensions, SudokuModel puzzle) {
-		this.puzzle = puzzle;
+		this.sudokuModel = puzzle;
 		this.board = dimensions;
 	}
 
@@ -66,13 +70,13 @@ public class SudokuController {
 		}
 	}
 
-	public void setValueToSelectedTile(int tile) {
-		Tile selected = puzzle.selectedTile();
-		puzzle.setValueToTile(selected.x(), selected.y(), tile);
+	private void setValueToSelectedTile(int tile) {
+		Tile selected = sudokuModel.selectedTile();
+		sudokuModel.setValueToTile(selected.x(), selected.y(), tile);
 	}
 
 	private void moveSelection(int diffX, int diffY) {
-		puzzle.moveSelection(diffX, diffY);
+		sudokuModel.moveSelection(diffX, diffY);
 	}
 
 	public boolean isTouchManaged(MotionEvent event) {
@@ -82,7 +86,7 @@ public class SudokuController {
 		int x = (int) event.getX();
 		int y = (int) event.getY();
 
-		Log.d(Game.TAG, "onTouchEvent: x touch  " + x + ", y " + y);
+		Log.d(Sudoiku.TAG, "onTouchEvent: x touch  " + x + ", y " + y);
 
 		checkGridTouch(x, y);
 		checkKeyBoardTouch(x, y);
@@ -97,22 +101,22 @@ public class SudokuController {
 		try {
 			int button = board.touchedButton(x);
 			if (button == Tile.NOTES_BUTTON) {
-				if (puzzle.isNotesMode())
-					puzzle.setInNumbersMode();
+				if (sudokuModel.isNotesMode())
+					sudokuModel.setInNumbersMode();
 				else
-					puzzle.setInNotesMode();
+					sudokuModel.setInNotesMode();
 			}
 			if (button == Tile.ERASE_BUTTON) {
-				if (puzzle.isNotesMode())
-					puzzle.resetNotes();
+				if (sudokuModel.isNotesMode())
+					sudokuModel.resetNotes();
 				else
 					setValueToSelectedTile(0);
 			}
 			if (button == Tile.SOLVE_BUTTON) {
-				puzzle.solve();
+				sudokuModel.solve();
 			}
 		} catch (SudokuException e) {
-			Log.e(Game.TAG, e.getMessage());
+			Log.e(Sudoiku.TAG, e.getMessage());
 		}
 	}
 
@@ -123,7 +127,7 @@ public class SudokuController {
 		try {
 			setValueToSelectedTile(board.touchedNumber(x));
 		} catch (SudokuException e) {
-			Log.e(Game.TAG, e.getMessage());
+			Log.e(Sudoiku.TAG, e.getMessage());
 		}
 	}
 
@@ -135,9 +139,9 @@ public class SudokuController {
 		try {
 			touchedTile = board.touchedTile(x, y);
 		} catch (SudokuException e) {
-			Log.e(Game.TAG, e.getMessage());
+			Log.e(Sudoiku.TAG, e.getMessage());
 			return;
 		}
-		puzzle.selectTile(touchedTile.a(), touchedTile.b());
+		sudokuModel.selectTile(touchedTile.a(), touchedTile.b());
 	}
 }

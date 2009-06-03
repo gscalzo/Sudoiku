@@ -1,4 +1,8 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoiku.view;
+
+import com.rubberdroid.sudoiku.R;
+import com.rubberdroid.sudoiku.model.SudokuModel;
+import com.rubberdroid.sudoiku.model.Tile;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

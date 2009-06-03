@@ -1,7 +1,10 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoiku.generator;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+
+import com.rubberdroid.sudoiku.Sudoiku;
+import com.rubberdroid.sudoiku.model.Tile;
 
 public class StaticSudokuGenerator implements SudokuGenerator {
 	private final String easyPuzzle = "360000000004230800000004200"
@@ -27,13 +30,13 @@ public class StaticSudokuGenerator implements SudokuGenerator {
 	public Tile[] create(int diff) {
 		String puz;
 		switch (diff) {
-		case Game.DIFFICULTY_HARD:
+		case Sudoiku.DIFFICULTY_HARD:
 			puz = hardPuzzle;
 			break;
-		case Game.DIFFICULTY_MEDIUM:
+		case Sudoiku.DIFFICULTY_MEDIUM:
 			puz = mediumPuzzle;
 			break;
-		case Game.DIFFICULTY_EASY:
+		case Sudoiku.DIFFICULTY_EASY:
 		default:
 			puz = easyPuzzle;
 			break;

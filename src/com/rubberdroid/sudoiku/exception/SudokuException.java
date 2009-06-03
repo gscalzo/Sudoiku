@@ -1,4 +1,4 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoiku.exception;
 
 public class SudokuException extends Exception {
 	private static final long serialVersionUID = -2155884189552209460L;

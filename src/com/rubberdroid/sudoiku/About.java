@@ -1,4 +1,6 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoiku;
+import com.rubberdroid.sudoiku.R;
+
 import android.app.Activity;
 import android.os.Bundle;
 

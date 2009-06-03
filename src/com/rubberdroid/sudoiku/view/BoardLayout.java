@@ -1,6 +1,8 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoiku.view;
 
-import com.jordan.sudoku.util.Pair;
+import com.rubberdroid.sudoiku.exception.SudokuException;
+import com.rubberdroid.sudoiku.model.Tile;
+import com.rubberdroid.sudoku.util.Pair;
 
 public class BoardLayout {
 	int boardSide;

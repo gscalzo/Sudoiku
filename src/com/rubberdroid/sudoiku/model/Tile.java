@@ -1,6 +1,11 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoiku.model;
 
-public class Tile {
+import java.io.Serializable;
+import java.util.Arrays;
+
+public class Tile implements Serializable {
+	private static final long serialVersionUID = 2352351809652897583L;
+
 	public static final int NOTES_BUTTON = 11;
 	public static final int ERASE_BUTTON = 0;
 	public static final int SOLVE_BUTTON = 12;
@@ -13,8 +18,13 @@ public class Tile {
 
 	@Override
 	public boolean equals(Object o) {
-		if (null != o && o instanceof Tile)
-			return ((Tile) o).x == x && ((Tile) o).y == y;
+		if (null != o && o instanceof Tile) {
+			Tile otherTile = (Tile) o;
+			return otherTile.x == x && otherTile.y == y
+					&& otherTile.value == value && otherTile.given == given
+					&& Arrays.equals(notes, otherTile.notes);
+
+		}
 
 		return false;
 	}

@@ -1,10 +1,15 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoiku.model;
 
+import java.io.Serializable;
 import java.util.Observable;
 
-import com.jordan.sudoku.util.Pair;
+import com.rubberdroid.sudoiku.generator.StaticSudokuGenerator;
+import com.rubberdroid.sudoiku.generator.SudokuGenerator;
+import com.rubberdroid.sudoiku.view.ToastMsg;
+import com.rubberdroid.sudoku.util.Pair;
 
-public class SudokuModel extends Observable {
+public class SudokuModel extends Observable implements Serializable {
+	private static final long serialVersionUID = 89590486528465331L;
 
 	private Tile puzzle[] = new Tile[9 * 9];
 
@@ -12,7 +17,7 @@ public class SudokuModel extends Observable {
 	private int selectedTileX;
 	private int selectedTileY;
 
-	private SudokuGenerator sudokuGenerator = new StaticSudokuGenerator();
+	private transient SudokuGenerator sudokuGenerator = new StaticSudokuGenerator();
 
 	private boolean notesMode;
 
@@ -38,7 +43,7 @@ public class SudokuModel extends Observable {
 		return puzzle[y * 9 + x];
 	}
 
-	protected int[] getUsedTiles(int x, int y) {
+	public int[] getUsedTiles(int x, int y) {
 		return used[x][y];
 	}
 
@@ -56,12 +61,13 @@ public class SudokuModel extends Observable {
 	}
 
 	private void setNumberToTile(int x, int y, int value) {
-		if (getTile(x, y).isGiven() || isUsed(x, y, value))
+		setChanged();
+		if (getTile(x, y).isGiven() || isUsed(x, y, value)) {
+			notifyObservers(new ToastMsg("Number not valid!"));
 			return;
-
+		}
 		setTile(x, y, value);
 		calculateUsedTiles();
-		setChanged();
 		notifyObservers();
 	}
 
@@ -136,19 +142,17 @@ public class SudokuModel extends Observable {
 		return c1;
 	}
 
-	static private String toPuzzleString(int[] puz) {
-		StringBuilder buf = new StringBuilder();
-		for (int element : puz) {
-			buf.append(element);
-		}
-		return buf.toString();
-	}
+//	static private String toPuzzleString(int[] puz) {
+//		StringBuilder buf = new StringBuilder();
+//		for (int element : puz) {
+//			buf.append(element);
+//		}
+//		return buf.toString();
+//	}
 
 	public void selectTile(int x, int y) {
 		Pair previousPosition = new Pair(selectedTileX, selectedTileY);
 		setNewPosition(x, y);
-		// Log.d(Game.TAG, "used[" + x + "][" + y + "] = "
-		// + toPuzzleString(used[x][y]));
 		notifyIfMoved(previousPosition);
 	}
 
@@ -196,17 +200,20 @@ public class SudokuModel extends Observable {
 	}
 
 	public void solve() {
-//		char[] puzzle = new char[81];
-//		for (int i = 0; i < 81; ++i) {
-//			puzzle[i] = (char) ((char) (this.puzzle[i].value()) + '0');
-//		}
-//		S.A = puzzle;
-//		S.R();
-//		for (int i = 0; i < 81; ++i) {
-//			this.puzzle[i].setValue(puzzle[i] - '0');
-//		}
-//		setChanged();
-//		notifyObservers();
+		setChanged();
+		notifyObservers(new ToastMsg("Solve!"));
+
+		// char[] puzzle = new char[81];
+		// for (int i = 0; i < 81; ++i) {
+		// puzzle[i] = (char) ((char) (this.puzzle[i].value()) + '0');
+		// }
+		// S.A = puzzle;
+		// S.R();
+		// for (int i = 0; i < 81; ++i) {
+		// this.puzzle[i].setValue(puzzle[i] - '0');
+		// }
+		// setChanged();
+		// notifyObservers();
 	}
 
 }

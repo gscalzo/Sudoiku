@@ -7,7 +7,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jordan.sudoku.util.Pair;
+import com.rubberdroid.sudoiku.exception.SudokuException;
+import com.rubberdroid.sudoiku.model.Tile;
+import com.rubberdroid.sudoiku.view.BoardLayout;
+import com.rubberdroid.sudoku.util.Pair;
 
 public class TestBoardLayout {
 	private BoardLayout layout;

@@ -1,4 +1,6 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoiku;
+
+import com.rubberdroid.sudoiku.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,9 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -20,11 +19,11 @@ public class Sudoku extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		addThisAsClickListenerTo(R.id.continue_button);
+		addThisAsClickListenerTo(R.id.resume_button);
 		addThisAsClickListenerTo(R.id.add_button);
 		addThisAsClickListenerTo(R.id.new_button);
 		addThisAsClickListenerTo(R.id.about_button);
-		addThisAsClickListenerTo(R.id.exit_button);
+		addThisAsClickListenerTo(R.id.settings_button);
 	}
 
 	private void addThisAsClickListenerTo(int viewId) {
@@ -42,11 +41,18 @@ public class Sudoku extends Activity implements OnClickListener {
 		case R.id.new_button:
 			openNewGameDialog();
 			break;
-		case R.id.exit_button:
-			finish();
+		case R.id.resume_button:
+			resumeGame();
 			break;
-
+		case R.id.settings_button:
+			startSettingsView();
+			break;
 		}
+	}
+
+	private void resumeGame() {
+		Intent intent = new Intent(Sudoku.this, Sudoiku.class);
+		startActivity(intent);
 	}
 
 	private void openNewGameDialog() {
@@ -61,29 +67,14 @@ public class Sudoku extends Activity implements OnClickListener {
 	}
 
 	private void startGame(int i) {
-		   Log.d(TAG, "clicked on " + i);
-		   Intent intent = new Intent(Sudoku.this, Game.class);
-		   intent.putExtra(Game.KEY_DIFFICULTY, i);
-		   startActivity(intent);
-		}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		return true;
+		Log.d(TAG, "clicked on " + i);
+		Intent intent = new Intent(Sudoku.this, Sudoiku.class);
+		intent.putExtra(Sudoiku.KEY_DIFFICULTY, i);
+		startActivity(intent);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.settings:
-			startActivity(new Intent(this, Settings.class));
-			return true;
-			// More items go here (if any) ...
-		}
-		return false;
+	private void startSettingsView() {
+		startActivity(new Intent(this, Settings.class));
 	}
 
 }

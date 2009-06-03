@@ -3,6 +3,9 @@ package com.jordan.sudoku;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 
+import com.rubberdroid.sudoiku.generator.SudokuGenerator;
+import com.rubberdroid.sudoiku.model.Tile;
+
 class MySudokuGenerator implements SudokuGenerator {
 	private final String puzzle = "360000000004230800000004200"
 			+ "070460003820000014500013020" + "001900000007048300000000045";

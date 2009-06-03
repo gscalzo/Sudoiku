@@ -9,6 +9,9 @@ import java.util.Observer;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.rubberdroid.sudoiku.Sudoiku;
+import com.rubberdroid.sudoiku.model.SudokuModel;
+
 public class TestModelNotification {
 
 	private SudokuModel model;
@@ -16,7 +19,7 @@ public class TestModelNotification {
 
 	@Before
 	public void createTestContext() {
-		model = new SudokuModel(Game.DIFFICULTY_EASY, new MySudokuGenerator());
+		model = new SudokuModel(Sudoiku.DIFFICULTY_EASY, new MySudokuGenerator());
 		canary = new MockObserver();
 		model.addObserver(canary);
 	}

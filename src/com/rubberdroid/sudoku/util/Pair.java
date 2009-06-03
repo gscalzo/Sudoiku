@@ -1,4 +1,4 @@
-package com.jordan.sudoku.util;
+package com.rubberdroid.sudoku.util;
 
 public class Pair {
 	private int a;

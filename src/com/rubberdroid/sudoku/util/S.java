@@ -1,4 +1,4 @@
-package com.jordan.sudoku;
+package com.rubberdroid.sudoku.util;
 
 import java.util.HashMap;
 
