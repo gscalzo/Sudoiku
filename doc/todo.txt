@@ -1,0 +1,12 @@
+todo
+popup per la prima volta che si fa resume e non esiste il salvato
+grafica
+controllo fine/soluzione gioco
+help
+eliminare soluzionatore
+settings (hints su numero di mosse rimaste, accensione keyboard se numero possibile)
+
+compressore/gestore livelli
+eventuale timer
+musica
+editor
