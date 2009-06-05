@@ -11,6 +11,7 @@ import com.rubberdroid.sudoiku.view.SudokuView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 public class Sudoiku extends Activity {
 	public static final String TAG = "Sudoku";
@@ -37,8 +38,11 @@ public class Sudoiku extends Activity {
 			try {
 				deserializeModel();
 			} catch (IOException e) {
-				// TODO
-				// popup che mai lanciato e fargliscegliere la difficoltà
+				Toast.makeText(this, "No previous game present",
+						Toast.LENGTH_SHORT).show();
+				finish();
+				return;
+
 			}
 		else
 			createModel(diff);

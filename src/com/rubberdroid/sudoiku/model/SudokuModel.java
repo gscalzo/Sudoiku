@@ -3,6 +3,7 @@ package com.rubberdroid.sudoiku.model;
 import java.io.Serializable;
 import java.util.Observable;
 
+import com.rubberdroid.sudoiku.R;
 import com.rubberdroid.sudoiku.generator.StaticSudokuGenerator;
 import com.rubberdroid.sudoiku.generator.SudokuGenerator;
 import com.rubberdroid.sudoiku.view.ToastMsg;
@@ -63,7 +64,7 @@ public class SudokuModel extends Observable implements Serializable {
 	private void setNumberToTile(int x, int y, int value) {
 		setChanged();
 		if (getTile(x, y).isGiven() || isUsed(x, y, value)) {
-			notifyObservers(new ToastMsg("Number not valid!"));
+			notifyObservers(new ToastMsg("Invalid entry"));
 			return;
 		}
 		setTile(x, y, value);
@@ -142,13 +143,13 @@ public class SudokuModel extends Observable implements Serializable {
 		return c1;
 	}
 
-//	static private String toPuzzleString(int[] puz) {
-//		StringBuilder buf = new StringBuilder();
-//		for (int element : puz) {
-//			buf.append(element);
-//		}
-//		return buf.toString();
-//	}
+	// static private String toPuzzleString(int[] puz) {
+	// StringBuilder buf = new StringBuilder();
+	// for (int element : puz) {
+	// buf.append(element);
+	// }
+	// return buf.toString();
+	// }
 
 	public void selectTile(int x, int y) {
 		Pair previousPosition = new Pair(selectedTileX, selectedTileY);
