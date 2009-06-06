@@ -1,9 +1,5 @@
 package com.rubberdroid.sudoiku.view;
 
-import com.rubberdroid.sudoiku.R;
-import com.rubberdroid.sudoiku.model.SudokuModel;
-import com.rubberdroid.sudoiku.model.Tile;
-
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +8,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
+
+import com.rubberdroid.sudoiku.R;
+import com.rubberdroid.sudoiku.model.SudokuModel;
+import com.rubberdroid.sudoiku.model.Tile;
 
 public class BoardView {
 
@@ -26,24 +26,36 @@ public class BoardView {
 	private Paint puzzle_selected;
 	int hintColors[];
 	private BoardLayout boardLayout;
-	private Bitmap wood_table;
 	private Bitmap notes_enabled;
 	private Bitmap notes_disabled;
 	private Bitmap eraser;
-	private Bitmap solve;
+
+	// -------------------------------------------------------
+	private Bitmap background_bitmap;
+	private Bitmap tile_dark;
+	private Bitmap tile_lite;
+	private Bitmap tile_orange;
+
+	// -------------------------------------------------------
 
 	public BoardView(BoardLayout boardLayout, SudokuModel puzzle,
 			Resources resources) {
 		this.boardLayout = boardLayout;
 		this.puzzle = puzzle;
 
-		wood_table = BitmapFactory.decodeResource(resources, R.drawable.table);
 		notes_enabled = BitmapFactory.decodeResource(resources,
 				R.drawable.notes_enabled);
 		notes_disabled = BitmapFactory.decodeResource(resources,
 				R.drawable.notes_disabled);
 		eraser = BitmapFactory.decodeResource(resources, R.drawable.eraser);
-		solve = BitmapFactory.decodeResource(resources, R.drawable.solve);
+		background_bitmap = BitmapFactory.decodeResource(resources,
+				R.drawable.nebula);
+		tile_dark = BitmapFactory.decodeResource(resources,
+				R.drawable.tile_dark);
+		tile_lite = BitmapFactory.decodeResource(resources,
+				R.drawable.tile_lite);
+		tile_orange = BitmapFactory.decodeResource(resources,
+				R.drawable.tile_orange);
 
 		createPaints(resources);
 		createHintColors(resources);
@@ -75,6 +87,7 @@ public class BoardView {
 		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
 		foreground.setColor(resources.getColor(color));
 		foreground.setStyle(Style.FILL);
+		foreground.setFakeBoldText(true);
 		foreground.setTextSize(size * 0.75f);
 		foreground.setTextAlign(Paint.Align.CENTER);
 		return foreground;
@@ -82,20 +95,59 @@ public class BoardView {
 
 	public void draw(Canvas canvas) {
 		drawBackground(canvas);
-		drawLines(canvas);
+		drawTiles(canvas);
+		// drawLines(canvas);
 		drawNumbers(canvas);
 		drawNotes(canvas);
 		drawNumberBoard(canvas);
-		drawHints(canvas);
-		drawSelection(canvas);
+		// drawHints(canvas);
+		// drawSelection(canvas);
 		drawButtons(canvas);
+	}
+
+	private void drawTiles(Canvas canvas) {
+		Rect darkTile = new Rect(0, 0, tile_dark.getWidth(), tile_dark
+				.getHeight());
+		Rect liteTile = new Rect(0, 0, tile_lite.getWidth(), tile_lite
+				.getHeight());
+
+		Rect selectedTile = new Rect(0, 0, tile_lite.getWidth(), tile_lite
+				.getHeight());
+
+		for (int i = 0; i < 81; i++) {
+			Bitmap tile = tile_dark;
+			Rect tileRect = darkTile;
+
+			if (puzzle.isSelected(i)) {
+				tile = tile_orange;
+				tileRect = selectedTile;
+			} else if (numOfBlock(i) % 2 == 0) {
+				tile = tile_lite;
+				tileRect = liteTile;
+			}
+
+			Rect dst = rectOfTileNo(i);
+			canvas.drawBitmap(tile, tileRect, dst, null);
+		}
+	}
+
+	private int numOfBlock(int i) {
+		int y = i / 9;
+		int x = i - y * 9;
+		return x / 3 + 3 * (y / 3);
+	}
+
+	private Rect rectOfTileNo(int i) {
+		int y = i / 9;
+		int x = i - y * 9;
+
+		return getTileRect(x, y);
 	}
 
 	private void drawButtons(Canvas canvas) {
 		int upper = boardLayout.boardSide + 2 * (int) boardLayout.tileSide + 3;
 		drawNotesButton(canvas, upper);
 		drawEraserButton(canvas, upper);
-		drawSolveButton(canvas, upper);
 	}
 
 	private void drawNotesButton(Canvas canvas, int upper) {
@@ -119,38 +171,18 @@ public class BoardView {
 		canvas.drawBitmap(eraser, src, dst, null);
 	}
 
-	private void drawSolveButton(Canvas canvas, int upper) {
-		Rect src = new Rect(0, 0, solve.getWidth(), solve.getHeight());
-		Rect dst = new Rect(boardLayout.boardSide / 2
-				+ (int) boardLayout.tileSide, upper, boardLayout.boardSide / 2
-				+ (int) boardLayout.tileSide * 2, upper
-				+ (int) boardLayout.tileSide);
-		canvas.drawBitmap(solve, src, dst, null);
-	}
 
 	private void drawNumberBoard(Canvas canvas) {
+		Rect tileRect = new Rect(0, 0, tile_dark.getWidth(), tile_dark
+				.getHeight());
+
 		int upper = boardLayout.boardSide + (int) boardLayout.tileSide;
-
-		Rect src = new Rect(0, 0, wood_table.getWidth(), wood_table.getHeight());
-		Rect dst = new Rect(0, boardLayout.boardSide, boardLayout.boardSide,
-				boardLayout.screenHeight);
-		canvas.drawBitmap(wood_table, src, dst, null);
-		canvas.drawRect(0, upper, boardLayout.boardSide, upper
-				+ boardLayout.tileSide, background);
-
 		for (int i = 0; i < 9; ++i) {
-			canvas
-					.drawLine(i * boardLayout.tileSide, upper, i
-							* boardLayout.tileSide, upper
-							+ boardLayout.tileSide, light);
-			canvas.drawLine(i * boardLayout.tileSide + 1, upper, i
-					* boardLayout.tileSide + 1, upper + boardLayout.tileSide,
-					hilite);
+			Rect dst = new Rect((int) (i * boardLayout.tileSide), upper,
+					(int) (i * boardLayout.tileSide + boardLayout.tileSide),
+					upper + (int) boardLayout.tileSide);
+			canvas.drawBitmap(tile_dark, tileRect, dst, null);
 		}
-
-		canvas.drawLine(0, upper, boardLayout.boardSide, upper, dark);
-		canvas.drawLine(0, upper + boardLayout.tileSide, boardLayout.boardSide,
-				upper + boardLayout.tileSide, dark);
 
 		float xTileCenter = boardLayout.tileSide / 2;
 		float yTileCenter = boardLayout.tileSide / 2 - (heightCenterOfText())
@@ -185,10 +217,10 @@ public class BoardView {
 		if (puzzle.isNumbersMode())
 			return;
 
-		Paint color = givens_color;
+		Paint color = foreground;
 		Tile selectedTile = puzzle.selectedTile();
 		if (selectedTile.noteActiveAt(currentNumber))
-			color = foreground;
+			color = givens_color;
 
 		canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
 				* boardLayout.tileSide + xTileCenter, upper + yTileCenter,
@@ -197,19 +229,17 @@ public class BoardView {
 
 	private void drawSelection(Canvas canvas) {
 		Tile tileSelected = puzzle.selectedTile();
-		Rect selectedRect = new Rect();
-		getTileRect(tileSelected.x(), tileSelected.y(), selectedRect);
+		Rect selectedRect = getTileRect(tileSelected.x(), tileSelected.y());
 		canvas.drawRect(selectedRect, puzzle_selected);
 	}
 
 	private void drawHints(Canvas canvas) {
 		Paint hint = new Paint();
-		Rect r = new Rect();
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				int movesleft = 9 - puzzle.getUsedTiles(i, j).length;
 				if (movesleft < hintColors.length) {
-					getTileRect(i, j, r);
+					Rect r = getTileRect(i, j);
 					hint.setColor(hintColors[movesleft]);
 					canvas.drawRect(r, hint);
 				}
@@ -217,16 +247,20 @@ public class BoardView {
 		}
 	}
 
-	private void getTileRect(int x, int y, Rect rect) {
-		rect.set((int) (x * boardLayout.tileSide),
+	private Rect getTileRect(int x, int y) {
+		Rect rect = new Rect((int) (x * boardLayout.tileSide),
 				(int) (y * boardLayout.tileSide), (int) (x
 						* boardLayout.tileSide + boardLayout.tileSide),
 				(int) (y * boardLayout.tileSide + boardLayout.tileSide));
+		return rect;
 	}
 
 	private void drawBackground(Canvas canvas) {
-		canvas.drawRect(0, 0, boardLayout.boardSide, boardLayout.boardSide,
-				background);
+		Rect src = new Rect(0, 0, background_bitmap.getWidth(),
+				background_bitmap.getHeight());
+		Rect dst = new Rect(0, 0, boardLayout.boardSide,
+				boardLayout.screenHeight);
+		canvas.drawBitmap(background_bitmap, src, dst, null);
 	}
 
 	private void drawLines(Canvas canvas) {

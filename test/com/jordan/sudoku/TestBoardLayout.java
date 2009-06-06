@@ -77,14 +77,13 @@ public class TestBoardLayout {
 
 	@Test
 	public void aPointShouldBeInsideButtonsBoardIfInButtonsBoard() {
-		assertTrue(layout.isInButtonsBoard(41, 101));
+		assertTrue(layout.isInButtonsBoard(41, 111));
 	}
 
 	@Test
 	public void theButtonShouldBeReturned() throws SudokuException {
 		assertEquals(Tile.ERASE_BUTTON, layout.touchedButton(41));
 		assertEquals(Tile.NOTES_BUTTON, layout.touchedButton(47));
-		assertEquals(Tile.SOLVE_BUTTON, layout.touchedButton(57));
 	}
 
 	@Test(expected = SudokuException.class)

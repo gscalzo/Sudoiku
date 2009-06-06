@@ -43,18 +43,16 @@ public class BoardLayout {
 	public boolean isInButtonsBoard(int x, int y) {
 		int leftX = (int) (boardSide / 2 - tileSide);
 		int rightX = (int) (boardSide / 2 + 2 * tileSide);
-		int topY = (int) (boardSide + tileSide);
+		int topY = (int) (boardSide + 2*tileSide);
 		int bottomY = (int) (boardSide + 3 * tileSide);
 		return x >= leftX && x < rightX && y >= topY && y < bottomY;
 	}
 
 	public int touchedButton(int x) throws SudokuException {
-		if (x < boardSide / 2 - tileSide || x >= boardSide / 2 + 2 * tileSide)
+		if (x < boardSide / 2 - tileSide || x >= boardSide / 2 + tileSide)
 			throw new SudokuException("No Button touched!");
-		if (x >= boardSide / 2 && x < boardSide / 2 + tileSide)
-			return Tile.NOTES_BUTTON;
 		if (x < boardSide / 2)
 			return Tile.ERASE_BUTTON;
-		return Tile.SOLVE_BUTTON;
+		return Tile.NOTES_BUTTON;
 	}
 }

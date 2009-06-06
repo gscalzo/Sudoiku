@@ -73,8 +73,12 @@ public class SudokuModel extends Observable implements Serializable {
 	}
 
 	private void setNoteToTile(int x, int y, int value) {
-		Tile tile = getTile(x, y);
-		tile.toggleNoteAt(value);
+		if (value == 0) {
+			resetNotes();
+		} else {
+			Tile tile = getTile(x, y);
+			tile.toggleNoteAt(value);
+		}
 		setChanged();
 		notifyObservers();
 	}
@@ -215,6 +219,10 @@ public class SudokuModel extends Observable implements Serializable {
 		// }
 		// setChanged();
 		// notifyObservers();
+	}
+
+	public boolean isSelected(int i) {
+		return (selectedTileY * 9 + selectedTileX) == i;
 	}
 
 }

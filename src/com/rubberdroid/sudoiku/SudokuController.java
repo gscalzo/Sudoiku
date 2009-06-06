@@ -34,6 +34,7 @@ public class SudokuController {
 			moveSelection(+1, 0);
 			return true;
 		case KeyEvent.KEYCODE_0:
+			setValueToSelectedTile(0);
 			return true;
 		case KeyEvent.KEYCODE_SPACE:
 			setValueToSelectedTile(0);
@@ -111,9 +112,6 @@ public class SudokuController {
 					sudokuModel.resetNotes();
 				else
 					setValueToSelectedTile(0);
-			}
-			if (button == Tile.SOLVE_BUTTON) {
-				sudokuModel.solve();
 			}
 		} catch (SudokuException e) {
 			Log.e(Sudoiku.TAG, e.getMessage());

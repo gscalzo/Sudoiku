@@ -2,14 +2,19 @@
 <PreferenceScreen
    xmlns:android="http://schemas.android.com/apk/res/android">
    <CheckBoxPreference
-      android:key="music"
-      android:title="@string/music_title"
-      android:summary="@string/music_summary"
+      android:key="soundfx"
+      android:title="@string/soundfx_title"
+      android:summary="@string/soundfx_summary"
       android:defaultValue="true" />
    <CheckBoxPreference
-      android:key="hints"
-      android:title="@string/hints_title"
-      android:summary="@string/hints_summary"
-      android:defaultValue="true" />
+      android:key="hints_tile"
+      android:title="@string/hints_tile_title"
+      android:summary="@string/hints_tile_summary"
+      android:defaultValue="false" />
+   <CheckBoxPreference
+      android:key="hints_numbers"
+      android:title="@string/hints_numbers_title"
+      android:summary="@string/hints_numbers_summary"
+      android:defaultValue="false" />
 </PreferenceScreen>
    

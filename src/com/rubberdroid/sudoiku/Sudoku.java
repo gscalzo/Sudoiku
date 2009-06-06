@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class Sudoku extends Activity implements OnClickListener {
-	private static final String TAG = "Sudoku";
+	private static final String TAG = "Sudoiku";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class Sudoku extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 
 		addThisAsClickListenerTo(R.id.resume_button);
-		addThisAsClickListenerTo(R.id.add_button);
+//		addThisAsClickListenerTo(R.id.add_button);
 		addThisAsClickListenerTo(R.id.new_button);
 		addThisAsClickListenerTo(R.id.about_button);
 		addThisAsClickListenerTo(R.id.settings_button);
@@ -29,7 +29,6 @@ public class Sudoku extends Activity implements OnClickListener {
 	private void addThisAsClickListenerTo(int viewId) {
 		View button = findViewById(viewId);
 		button.setOnClickListener(this);
-
 	}
 
 	public void onClick(View v) {

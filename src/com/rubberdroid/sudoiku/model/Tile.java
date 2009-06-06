@@ -8,7 +8,6 @@ public class Tile implements Serializable {
 
 	public static final int NOTES_BUTTON = 11;
 	public static final int ERASE_BUTTON = 0;
-	public static final int SOLVE_BUTTON = 12;
 
 	private int x;
 	private int y;
