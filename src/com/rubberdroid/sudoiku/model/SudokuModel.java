@@ -225,4 +225,13 @@ public class SudokuModel extends Observable implements Serializable {
 		return (selectedTileY * 9 + selectedTileX) == i;
 	}
 
+	public boolean isFinshed() {
+		for (int x = 0; x < 9; ++x)
+			for (int y = 0; y < 9; ++y)
+				if (getTile(x, y).value()==0)
+					return false;
+
+		return true;
+	}
+
 }

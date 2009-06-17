@@ -11,8 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.rubberdroid.sudoiku.Sudoiku;
+import com.rubberdroid.sudoiku.generator.SudokuGenerator;
 import com.rubberdroid.sudoiku.model.SudokuModel;
 import com.rubberdroid.sudoiku.model.Tile;
+import com.rubberdroid.sudoku.util.GeneratorSupport;
 import com.rubberdroid.sudoku.util.Pair;
 
 public class TestSudokuModel {
@@ -77,5 +79,23 @@ public class TestSudokuModel {
 		assertFalse(model.isNotesMode());
 	}
 
-
+	@Test
+	public void modelShouldSayIfPuzzleIsFinished() {
+		SudokuModel model = new SudokuModel(0, new SudokuGenerator() {
+			public Tile[] create(int diff) {
+				return GeneratorSupport
+						.fromPuzzleString("038427651756981324241365798683542917172693845495178263324859176517236489869714532");
+			}
+		});
+		
+		assertFalse(model.isFinshed());
+		model.setValueToTile(0, 0, 2);
+		assertFalse(model.isFinshed());
+		model.setValueToTile(0, 0, 9);
+		assertTrue(model.isFinshed());
+		model.setValueToTile(0, 0, 2);
+		assertTrue(model.isFinshed());
+		model.setValueToTile(0, 0, 0);
+		assertFalse(model.isFinshed());
+	}
 }

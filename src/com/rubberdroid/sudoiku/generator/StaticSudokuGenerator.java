@@ -5,6 +5,7 @@ import java.text.StringCharacterIterator;
 
 import com.rubberdroid.sudoiku.Sudoiku;
 import com.rubberdroid.sudoiku.model.Tile;
+import com.rubberdroid.sudoku.util.GeneratorSupport;
 
 public class StaticSudokuGenerator implements SudokuGenerator {
 	private final String easyPuzzle = "360000000004230800000004200"
@@ -14,18 +15,6 @@ public class StaticSudokuGenerator implements SudokuGenerator {
 	private final String hardPuzzle = "009000000080605020501078000"
 			+ "000000700706040102004000000" + "000720903090301080000000600";
 
-	private Tile[] fromPuzzleString(String puzzleAsString) {
-		Tile[] puzzle = new Tile[puzzleAsString.length()];
-		CharacterIterator charIterator = new StringCharacterIterator(
-				puzzleAsString);
-		for (int y = 0; y < 9; ++y) {
-			for (int x = 0; x < 9; ++x) {
-				puzzle[y * 9 + x] = new Tile(x, y, charIterator.current() - '0');
-				charIterator.next();
-			}
-		}
-		return puzzle;
-	}
 
 	public Tile[] create(int diff) {
 		String puz;
@@ -41,7 +30,7 @@ public class StaticSudokuGenerator implements SudokuGenerator {
 			puz = easyPuzzle;
 			break;
 		}
-		return fromPuzzleString(puz);
+		return GeneratorSupport.fromPuzzleString(puz);
 	}
 
 }

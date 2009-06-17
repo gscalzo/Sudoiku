@@ -18,7 +18,6 @@ public class BoardView {
 	private Paint dark;
 	private Paint hilite;
 	private Paint light;
-	private Paint background;
 	private Paint foreground;
 	private Paint notes;
 	private Paint givens_color;
@@ -35,6 +34,7 @@ public class BoardView {
 	private Bitmap tile_dark;
 	private Bitmap tile_lite;
 	private Bitmap tile_orange;
+	private Paint disabled_numbers;
 
 	// -------------------------------------------------------
 
@@ -72,8 +72,8 @@ public class BoardView {
 		dark = createPaint(R.color.puzzle_dark, resources);
 		light = createPaint(R.color.puzzle_light, resources);
 		hilite = createPaint(R.color.puzzle_hilite, resources);
-		background = createPaint(R.color.puzzle_background, resources);
 		puzzle_selected = createPaint(R.color.puzzle_selected, resources);
+		disabled_numbers= createPaint(R.color.puzzle_disabled, resources);
 
 		foreground = createNumbersPaint(resources, R.color.puzzle_foreground,
 				boardLayout.tileSide);
@@ -205,7 +205,7 @@ public class BoardView {
 		if (selectedTile.isGiven()
 				|| puzzle.isUsed(selectedTile.x(), selectedTile.y(),
 						currentNumber))
-			color = givens_color;
+			color = disabled_numbers;
 
 		canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
 				* boardLayout.tileSide + xTileCenter, upper + yTileCenter,
