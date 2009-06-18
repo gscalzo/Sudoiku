@@ -18,8 +18,9 @@ public class Sudoiku extends Activity {
 
 	public static final String KEY_DIFFICULTY = "difficulty";
 	public static final int DIFFICULTY_EASY = 0;
-	public static final int DIFFICULTY_MEDIUM = 1;
-	public static final int DIFFICULTY_HARD = 2;
+	public static final int DIFFICULTY_SIMPLE = 1;
+	public static final int DIFFICULTY_MEDIUM = 2;
+	public static final int DIFFICULTY_EXPERT = 3;
 
 	public enum Difficulty {
 		easy, medium, hard

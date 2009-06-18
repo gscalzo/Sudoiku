@@ -8,6 +8,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 
 import com.rubberdroid.sudoiku.R;
 import com.rubberdroid.sudoiku.model.SudokuModel;
@@ -35,6 +38,7 @@ public class BoardView {
 	private Bitmap tile_lite;
 	private Bitmap tile_orange;
 	private Paint disabled_numbers;
+    private Animation anim;
 
 	// -------------------------------------------------------
 
@@ -96,15 +100,14 @@ public class BoardView {
 	public void draw(Canvas canvas) {
 		drawBackground(canvas);
 		drawTiles(canvas);
-		// drawLines(canvas);
 		drawNumbers(canvas);
 		drawNotes(canvas);
 		drawNumberBoard(canvas);
-		// drawHints(canvas);
-		// drawSelection(canvas);
 		drawButtons(canvas);
+//		drawThumbUp(canvas);
+		
 	}
-
+	
 	private void drawTiles(Canvas canvas) {
 		Rect darkTile = new Rect(0, 0, tile_dark.getWidth(), tile_dark
 				.getHeight());
@@ -220,7 +223,7 @@ public class BoardView {
 		Paint color = foreground;
 		Tile selectedTile = puzzle.selectedTile();
 		if (selectedTile.noteActiveAt(currentNumber))
-			color = givens_color;
+			color = disabled_numbers;
 
 		canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
 				* boardLayout.tileSide + xTileCenter, upper + yTileCenter,

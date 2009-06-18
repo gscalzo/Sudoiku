@@ -30,8 +30,9 @@
 	<string name="hints_numbers_summary">Show available numbers during play</string>
 	<string name="new_game_title">Difficulty</string>
 	<string name="easy_label">Easy</string>
+	<string name="simple_label">Simple</string>
 	<string name="medium_label">Medium</string>
-	<string name="hard_label">Hard</string>
+	<string name="expert_label">Expert</string>
 	<string name="game_title">Sudoiku</string>
 	<string name="no_moves_label">No moves</string>
 	<string name="keypad_title">Keypad</string>
