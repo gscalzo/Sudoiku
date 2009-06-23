@@ -8,24 +8,17 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 
 import com.rubberdroid.sudoiku.R;
 import com.rubberdroid.sudoiku.model.SudokuModel;
 import com.rubberdroid.sudoiku.model.Tile;
 
 public class BoardView {
-
-	private Paint dark;
-	private Paint hilite;
-	private Paint light;
 	private Paint foreground;
 	private Paint notes;
 	private Paint givens_color;
 	private SudokuModel puzzle;
-	private Paint puzzle_selected;
 	int hintColors[];
 	private BoardLayout boardLayout;
 	private Bitmap notes_enabled;
@@ -38,7 +31,7 @@ public class BoardView {
 	private Bitmap tile_lite;
 	private Bitmap tile_orange;
 	private Paint disabled_numbers;
-    private Animation anim;
+	private Bitmap alienWinBitmap;
 
 	// -------------------------------------------------------
 
@@ -61,6 +54,9 @@ public class BoardView {
 		tile_orange = BitmapFactory.decodeResource(resources,
 				R.drawable.tile_orange);
 
+		alienWinBitmap = BitmapFactory.decodeResource(resources,
+				R.drawable.golden_alien_win);
+
 		createPaints(resources);
 		createHintColors(resources);
 
@@ -73,11 +69,7 @@ public class BoardView {
 	}
 
 	private void createPaints(Resources resources) {
-		dark = createPaint(R.color.puzzle_dark, resources);
-		light = createPaint(R.color.puzzle_light, resources);
-		hilite = createPaint(R.color.puzzle_hilite, resources);
-		puzzle_selected = createPaint(R.color.puzzle_selected, resources);
-		disabled_numbers= createPaint(R.color.puzzle_disabled, resources);
+		disabled_numbers = createPaint(R.color.puzzle_disabled, resources);
 
 		foreground = createNumbersPaint(resources, R.color.puzzle_foreground,
 				boardLayout.tileSide);
@@ -104,10 +96,24 @@ public class BoardView {
 		drawNotes(canvas);
 		drawNumberBoard(canvas);
 		drawButtons(canvas);
-//		drawThumbUp(canvas);
-		
+		drawAlien(canvas);
+
 	}
-	
+
+	private void drawAlien(Canvas canvas) {
+		if (!puzzle.isFinshed())
+			return;
+
+		Rect src = new Rect(0, 0, alienWinBitmap.getWidth(), alienWinBitmap
+				.getHeight());
+		int topX = (boardLayout.boardSide - src.width()) / 2;
+		int topY = (boardLayout.screenHeight - src.height()) / 2;
+		Rect dst = new Rect(topX, topY, topX + alienWinBitmap.getWidth(), topY
+				+ alienWinBitmap
+				.getHeight());
+		canvas.drawBitmap(alienWinBitmap, src, dst, null);
+	}
+
 	private void drawTiles(Canvas canvas) {
 		Rect darkTile = new Rect(0, 0, tile_dark.getWidth(), tile_dark
 				.getHeight());
@@ -174,7 +180,6 @@ public class BoardView {
 		canvas.drawBitmap(eraser, src, dst, null);
 	}
 
-
 	private void drawNumberBoard(Canvas canvas) {
 		Rect tileRect = new Rect(0, 0, tile_dark.getWidth(), tile_dark
 				.getHeight());
@@ -229,27 +234,6 @@ public class BoardView {
 				* boardLayout.tileSide + xTileCenter, upper + yTileCenter,
 				color);
 	}
-
-	private void drawSelection(Canvas canvas) {
-		Tile tileSelected = puzzle.selectedTile();
-		Rect selectedRect = getTileRect(tileSelected.x(), tileSelected.y());
-		canvas.drawRect(selectedRect, puzzle_selected);
-	}
-
-	private void drawHints(Canvas canvas) {
-		Paint hint = new Paint();
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				int movesleft = 9 - puzzle.getUsedTiles(i, j).length;
-				if (movesleft < hintColors.length) {
-					Rect r = getTileRect(i, j);
-					hint.setColor(hintColors[movesleft]);
-					canvas.drawRect(r, hint);
-				}
-			}
-		}
-	}
-
 	private Rect getTileRect(int x, int y) {
 		Rect rect = new Rect((int) (x * boardLayout.tileSide),
 				(int) (y * boardLayout.tileSide), (int) (x
@@ -264,33 +248,6 @@ public class BoardView {
 		Rect dst = new Rect(0, 0, boardLayout.boardSide,
 				boardLayout.screenHeight);
 		canvas.drawBitmap(background_bitmap, src, dst, null);
-	}
-
-	private void drawLines(Canvas canvas) {
-		for (int i = 0; i < 9; i++) {
-			if (i % 3 == 0) {
-				drawHorizontalLine(canvas, dark, i);
-				drawVerticalLine(canvas, dark, i);
-			} else {
-				drawHorizontalLine(canvas, light, i);
-				drawVerticalLine(canvas, light, i);
-
-			}
-		}
-	}
-
-	private void drawVerticalLine(Canvas canvas, Paint color, int i) {
-		canvas.drawLine(i * boardLayout.tileSide, 0, i * boardLayout.tileSide,
-				boardLayout.boardSide, color);
-		canvas.drawLine(i * boardLayout.tileSide + 1, 0, i
-				* boardLayout.tileSide + 1, boardLayout.boardSide, hilite);
-	}
-
-	private void drawHorizontalLine(Canvas canvas, Paint color, int i) {
-		canvas.drawLine(0, i * boardLayout.tileSide, boardLayout.boardSide, i
-				* boardLayout.tileSide, color);
-		canvas.drawLine(0, i * boardLayout.tileSide + 1, boardLayout.boardSide,
-				i * boardLayout.tileSide + 1, hilite);
 	}
 
 	private Paint createPaint(int color, Resources resources) {

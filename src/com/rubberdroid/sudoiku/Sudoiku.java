@@ -9,6 +9,7 @@ import com.rubberdroid.sudoiku.model.SudokuModel;
 import com.rubberdroid.sudoiku.view.SudokuView;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -52,6 +53,21 @@ public class Sudoiku extends Activity {
 
 		setContentView(sudokuView);
 		sudokuView.requestFocus();
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		serializeModel();
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		try {
+			deserializeModel();
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage());
+		}
 	}
 
 	private void deserializeModel() throws IOException {

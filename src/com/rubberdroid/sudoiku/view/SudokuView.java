@@ -3,12 +3,16 @@ package com.rubberdroid.sudoiku.view;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.rubberdroid.sudoiku.R;
 import com.rubberdroid.sudoiku.Sudoiku;
 import com.rubberdroid.sudoiku.SudokuController;
 import com.rubberdroid.sudoiku.model.SudokuModel;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -21,6 +25,7 @@ public class SudokuView extends View implements Observer {
 	private SudokuModel puzzle;
 	private SudokuController controller;
 
+
 	public SudokuView(Context context, SudokuModel puzzle) {
 		super(context);
 
@@ -29,6 +34,7 @@ public class SudokuView extends View implements Observer {
 
 		setFocusable(true);
 		setFocusableInTouchMode(true);
+		
 	}
 
 	@Override
@@ -41,7 +47,7 @@ public class SudokuView extends View implements Observer {
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public boolean onKeyDown(int keyCode, KeyEvent event) {		
 		Log.d(Sudoiku.TAG, "onKeyDown: keycode=" + keyCode + ", event=" + event);
 		if (controller.isKeyManaged(keyCode, event))
 			return true;
@@ -60,6 +66,7 @@ public class SudokuView extends View implements Observer {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		board.draw(canvas);
+
 	}
 
 	public void update(Observable observable, Object data) {

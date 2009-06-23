@@ -1,7 +1,6 @@
 todo
 controllo fine/soluzione gioco
 help
-aggiustare se si gira telefono
 hints su mettere tutte le mosse rimaste come nota
 settings (hints su numero di mosse rimaste, accensione keyboard se numero possibile)
 
@@ -16,3 +15,4 @@ popup per la prima volta che si fa resume e non esiste il salvato
 eliminare soluzionatore
 grafica(due bottoni)
 icona
+aggiustare se si gira telefono (gestisce e forza solo portrait)
