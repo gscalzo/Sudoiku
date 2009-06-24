@@ -1,5 +1,4 @@
 todo
-controllo fine/soluzione gioco
 help
 hints su mettere tutte le mosse rimaste come nota
 settings (hints su numero di mosse rimaste, accensione keyboard se numero possibile)
@@ -16,3 +15,4 @@ eliminare soluzionatore
 grafica(due bottoni)
 icona
 aggiustare se si gira telefono (gestisce e forza solo portrait)
+controllo fine/soluzione gioco
