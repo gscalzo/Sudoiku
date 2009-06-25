@@ -27,7 +27,6 @@ public class Sudoiku extends Activity {
 		easy, medium, hard
 	};
 
-	private SudokuView sudokuView;
 	private SudokuModel sudokuModel;
 
 	@Override
@@ -49,7 +48,7 @@ public class Sudoiku extends Activity {
 		else
 			createModel(diff);
 
-		sudokuView = new SudokuView(this, sudokuModel);
+		SudokuView sudokuView = new SudokuView(this, sudokuModel,new SudoikuPreferences(this));
 
 		setContentView(sudokuView);
 		sudokuView.requestFocus();

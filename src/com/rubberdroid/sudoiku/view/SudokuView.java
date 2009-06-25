@@ -3,34 +3,34 @@ package com.rubberdroid.sudoiku.view;
 import java.util.Observable;
 import java.util.Observer;
 
-import com.rubberdroid.sudoiku.R;
-import com.rubberdroid.sudoiku.Sudoiku;
-import com.rubberdroid.sudoiku.SudokuController;
-import com.rubberdroid.sudoiku.model.SudokuModel;
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.rubberdroid.sudoiku.Sudoiku;
+import com.rubberdroid.sudoiku.SudoikuPreferences;
+import com.rubberdroid.sudoiku.SudokuController;
+import com.rubberdroid.sudoiku.model.SudokuModel;
+
 public class SudokuView extends View implements Observer {
 	private BoardView board;
 
-	private SudokuModel puzzle;
-	private SudokuController controller;
+	private SudokuModel sudokuModel;
+	private SudokuController controller;	
+	private SudoikuPreferences preferences;
 
 
-	public SudokuView(Context context, SudokuModel puzzle) {
+	public SudokuView(Context context, SudokuModel sudokuModel,SudoikuPreferences preferences) {
 		super(context);
 
-		this.puzzle = puzzle;
-		puzzle.addObserver(this);
+		this.sudokuModel = sudokuModel;
+		this.preferences = preferences;
+		
+		sudokuModel.addObserver(this);
 
 		setFocusable(true);
 		setFocusableInTouchMode(true);
@@ -42,8 +42,8 @@ public class SudokuView extends View implements Observer {
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		BoardLayout dimensions = new BoardLayout(getWidth(), getHeight());
-		controller = new SudokuController(dimensions, puzzle);
-		board = new BoardView(dimensions, puzzle, getResources());
+		controller = new SudokuController(dimensions, sudokuModel);
+		board = new BoardView(dimensions, sudokuModel, getResources(),preferences);
 	}
 
 	@Override

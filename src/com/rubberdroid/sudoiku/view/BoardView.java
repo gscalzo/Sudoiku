@@ -11,6 +11,7 @@ import android.graphics.Paint.Style;
 import android.view.animation.Animation;
 
 import com.rubberdroid.sudoiku.R;
+import com.rubberdroid.sudoiku.SudoikuPreferences;
 import com.rubberdroid.sudoiku.model.SudokuModel;
 import com.rubberdroid.sudoiku.model.Tile;
 
@@ -32,13 +33,15 @@ public class BoardView {
 	private Bitmap tile_orange;
 	private Paint disabled_numbers;
 	private Bitmap alienWinBitmap;
+	private SudoikuPreferences preferences;
 
 	// -------------------------------------------------------
 
 	public BoardView(BoardLayout boardLayout, SudokuModel puzzle,
-			Resources resources) {
+			Resources resources, SudoikuPreferences preferences) {
 		this.boardLayout = boardLayout;
 		this.puzzle = puzzle;
+		this.preferences = preferences;
 
 		notes_enabled = BitmapFactory.decodeResource(resources,
 				R.drawable.notes_enabled);
@@ -109,8 +112,7 @@ public class BoardView {
 		int topX = (boardLayout.boardSide - src.width()) / 2;
 		int topY = (boardLayout.screenHeight - src.height()) / 2;
 		Rect dst = new Rect(topX, topY, topX + alienWinBitmap.getWidth(), topY
-				+ alienWinBitmap
-				.getHeight());
+				+ alienWinBitmap.getHeight());
 		canvas.drawBitmap(alienWinBitmap, src, dst, null);
 	}
 
@@ -210,9 +212,9 @@ public class BoardView {
 
 		Paint color = foreground;
 		Tile selectedTile = puzzle.selectedTile();
-		if (selectedTile.isGiven()
+		if (preferences.hintsNumbers()&&(selectedTile.isGiven()
 				|| puzzle.isUsed(selectedTile.x(), selectedTile.y(),
-						currentNumber))
+						currentNumber)))
 			color = disabled_numbers;
 
 		canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
@@ -234,6 +236,7 @@ public class BoardView {
 				* boardLayout.tileSide + xTileCenter, upper + yTileCenter,
 				color);
 	}
+
 	private Rect getTileRect(int x, int y) {
 		Rect rect = new Rect((int) (x * boardLayout.tileSide),
 				(int) (y * boardLayout.tileSide), (int) (x
@@ -275,6 +278,9 @@ public class BoardView {
 	}
 
 	private void drawNotes(Canvas canvas) {
+		if (preferences.hintsNotes())
+			availableNumbersAsNotes();
+
 		float xNoteCenter = boardLayout.tileSide / 6f;
 		float yNoteCenter = (boardLayout.tileSide - heightCenterOfText()) / 6f;
 		int noteSide = (int) (boardLayout.tileSide / 3f);
@@ -298,6 +304,25 @@ public class BoardView {
 									+ yNote * noteSide + yNoteCenter, color);
 					}
 				}
+			}
+		}
+	}
+
+	private void availableNumbersAsNotes() {
+		for (int col = 0; col < 9; col++) {
+			for (int row = 0; row < 9; row++) {
+				Tile currentTile = puzzle.getTile(col, row);
+				if (currentTile.value() != 0)
+					continue;
+
+				currentTile.resetNotes();
+				for (int i = 1; i < 10; ++i)
+					currentTile.toggleNoteAt(i);
+
+				int[] usedNumbers = puzzle.getUsedTiles(col, row);
+				for (int number : usedNumbers)
+					currentTile.toggleNoteAt(number);
+
 			}
 		}
 	}

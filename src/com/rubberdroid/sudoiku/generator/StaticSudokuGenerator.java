@@ -834,11 +834,11 @@ public class StaticSudokuGenerator implements SudokuGenerator {
 
 	private final String finishedPuzzle = "038427651756981324241365798683542917172693845495178263324859176517236489869714532";
 
-	public Tile[] create(int diff) {
+	public Tile[] create1(int diff) {
 		return GeneratorSupport.fromPuzzleString(finishedPuzzle);
 	}
 	
-	public Tile[] create1(int diff) {
+	public Tile[] create(int diff) {
 		String[] level = levels.get(diff);
 		String puzzle = level[random.nextInt(level.length)];
 		return GeneratorSupport.fromPuzzleString(puzzle);

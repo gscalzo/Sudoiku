@@ -24,8 +24,10 @@
 	<string name="settings_title">Sudoiku settings</string>
 	<string name="soundfx_title">Sound Effects</string>
 	<string name="soundfx_summary">Play sound effects</string>
-	<string name="hints_tile_title">Hints on Tile</string>
-	<string name="hints_tile_summary">Show hints during play</string>
+	
+	
+	<string name="hints_notes_title">Hints on notes</string>
+	<string name="hints_notes_summary">Show available numbers as notes</string>
 	<string name="hints_numbers_title">Hints on numbers</string>
 	<string name="hints_numbers_summary">Show available numbers during play</string>
 	<string name="new_game_title">Difficulty</string>

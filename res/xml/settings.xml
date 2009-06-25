@@ -7,9 +7,9 @@
       android:summary="@string/soundfx_summary"
       android:defaultValue="true" />
    <CheckBoxPreference
-      android:key="hints_tile"
-      android:title="@string/hints_tile_title"
-      android:summary="@string/hints_tile_summary"
+      android:key="hints_notes"
+      android:title="@string/hints_notes_title"
+      android:summary="@string/hints_notes_summary"
       android:defaultValue="false" />
    <CheckBoxPreference
       android:key="hints_numbers"
