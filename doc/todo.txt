@@ -1,11 +1,8 @@
 todo
 help
-hints su mettere tutte le mosse rimaste come nota
-settings (hints su numero di mosse rimaste, accensione keyboard se numero possibile)
 
 compressore/gestore livelli
 eventuale timer
-musica
 border
 editor
 
@@ -16,3 +13,6 @@ grafica(due bottoni)
 icona
 aggiustare se si gira telefono (gestisce e forza solo portrait)
 controllo fine/soluzione gioco
+hints su mettere tutte le mosse rimaste come nota
+settings (hints su numero di mosse rimaste, accensione keyboard se numero possibile)
+musica

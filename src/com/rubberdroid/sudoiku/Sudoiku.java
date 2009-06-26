@@ -29,6 +29,8 @@ public class Sudoiku extends Activity {
 
 	private SudokuModel sudokuModel;
 
+	private SoundManager soundManager;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,7 +50,11 @@ public class Sudoiku extends Activity {
 		else
 			createModel(diff);
 
-		SudokuView sudokuView = new SudokuView(this, sudokuModel,new SudoikuPreferences(this));
+		SudoikuPreferences preferences = new SudoikuPreferences(this);
+		soundManager = new SoundManager(this, preferences);
+
+		SudokuView sudokuView = new SudokuView(this, sudokuModel, preferences,
+				soundManager);
 
 		setContentView(sudokuView);
 		sudokuView.requestFocus();
@@ -86,6 +92,7 @@ public class Sudoiku extends Activity {
 
 	@Override
 	protected void onPause() {
+		soundManager.stop();
 		serializeModel();
 		super.onPause();
 	}

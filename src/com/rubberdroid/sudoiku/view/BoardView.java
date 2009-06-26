@@ -8,9 +8,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
-import android.view.animation.Animation;
 
 import com.rubberdroid.sudoiku.R;
+import com.rubberdroid.sudoiku.SoundManager;
 import com.rubberdroid.sudoiku.SudoikuPreferences;
 import com.rubberdroid.sudoiku.model.SudokuModel;
 import com.rubberdroid.sudoiku.model.Tile;
@@ -19,7 +19,7 @@ public class BoardView {
 	private Paint foreground;
 	private Paint notes;
 	private Paint givens_color;
-	private SudokuModel puzzle;
+	private SudokuModel sudokumodel;
 	int hintColors[];
 	private BoardLayout boardLayout;
 	private Bitmap notes_enabled;
@@ -34,14 +34,17 @@ public class BoardView {
 	private Paint disabled_numbers;
 	private Bitmap alienWinBitmap;
 	private SudoikuPreferences preferences;
+	private SoundManager soundManager;
 
 	// -------------------------------------------------------
 
 	public BoardView(BoardLayout boardLayout, SudokuModel puzzle,
-			Resources resources, SudoikuPreferences preferences) {
+			Resources resources, SudoikuPreferences preferences,
+			SoundManager soundManager) {
 		this.boardLayout = boardLayout;
-		this.puzzle = puzzle;
+		this.sudokumodel = puzzle;
 		this.preferences = preferences;
+		this.soundManager = soundManager;
 
 		notes_enabled = BitmapFactory.decodeResource(resources,
 				R.drawable.notes_enabled);
@@ -104,8 +107,9 @@ public class BoardView {
 	}
 
 	private void drawAlien(Canvas canvas) {
-		if (!puzzle.isFinshed())
+		if (!sudokumodel.isFinshed())
 			return;
+		soundManager.playWinning();
 
 		Rect src = new Rect(0, 0, alienWinBitmap.getWidth(), alienWinBitmap
 				.getHeight());
@@ -129,7 +133,7 @@ public class BoardView {
 			Bitmap tile = tile_dark;
 			Rect tileRect = darkTile;
 
-			if (puzzle.isSelected(i)) {
+			if (sudokumodel.isSelected(i)) {
 				tile = tile_orange;
 				tileRect = selectedTile;
 			} else if (numOfBlock(i) % 2 == 0) {
@@ -163,7 +167,7 @@ public class BoardView {
 
 	private void drawNotesButton(Canvas canvas, int upper) {
 		Bitmap notes_button = notes_disabled;
-		if (puzzle.isNotesMode())
+		if (sudokumodel.isNotesMode())
 			notes_button = notes_enabled;
 
 		Rect src = new Rect(0, 0, notes_button.getWidth(), notes_button
@@ -207,14 +211,14 @@ public class BoardView {
 
 	private void drawInNumbersMode(Canvas canvas, int upper, float xTileCenter,
 			float yTileCenter, int currentNumber) {
-		if (puzzle.isNotesMode())
+		if (sudokumodel.isNotesMode())
 			return;
 
 		Paint color = foreground;
-		Tile selectedTile = puzzle.selectedTile();
-		if (preferences.hintsNumbers()&&(selectedTile.isGiven()
-				|| puzzle.isUsed(selectedTile.x(), selectedTile.y(),
-						currentNumber)))
+		Tile selectedTile = sudokumodel.selectedTile();
+		if (preferences.hintsNumbers()
+				&& (selectedTile.isGiven() || sudokumodel.isUsed(selectedTile
+						.x(), selectedTile.y(), currentNumber)))
 			color = disabled_numbers;
 
 		canvas.drawText(String.valueOf(currentNumber), (currentNumber - 1)
@@ -224,11 +228,11 @@ public class BoardView {
 
 	private void drawInNotesMode(Canvas canvas, int upper, float xTileCenter,
 			float yTileCenter, int currentNumber) {
-		if (puzzle.isNumbersMode())
+		if (sudokumodel.isNumbersMode())
 			return;
 
 		Paint color = foreground;
-		Tile selectedTile = puzzle.selectedTile();
+		Tile selectedTile = sudokumodel.selectedTile();
 		if (selectedTile.noteActiveAt(currentNumber))
 			color = disabled_numbers;
 
@@ -265,7 +269,7 @@ public class BoardView {
 				/ 2;
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
-				Tile currentTile = puzzle.getTile(col, row);
+				Tile currentTile = sudokumodel.getTile(col, row);
 				Paint color = foreground;
 				if (currentTile.isGiven())
 					color = givens_color;
@@ -287,7 +291,7 @@ public class BoardView {
 
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
-				Tile currentTile = puzzle.getTile(col, row);
+				Tile currentTile = sudokumodel.getTile(col, row);
 				if (currentTile.value() != 0)
 					continue;
 
@@ -311,7 +315,7 @@ public class BoardView {
 	private void availableNumbersAsNotes() {
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
-				Tile currentTile = puzzle.getTile(col, row);
+				Tile currentTile = sudokumodel.getTile(col, row);
 				if (currentTile.value() != 0)
 					continue;
 
@@ -319,7 +323,7 @@ public class BoardView {
 				for (int i = 1; i < 10; ++i)
 					currentTile.toggleNoteAt(i);
 
-				int[] usedNumbers = puzzle.getUsedTiles(col, row);
+				int[] usedNumbers = sudokumodel.getUsedTiles(col, row);
 				for (int number : usedNumbers)
 					currentTile.toggleNoteAt(number);
 
