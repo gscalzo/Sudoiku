@@ -3,7 +3,6 @@ package com.rubberdroid.sudoiku.model;
 import java.io.Serializable;
 import java.util.Observable;
 
-import com.rubberdroid.sudoiku.R;
 import com.rubberdroid.sudoiku.generator.StaticSudokuGenerator;
 import com.rubberdroid.sudoiku.generator.SudokuGenerator;
 import com.rubberdroid.sudoiku.view.ToastMsg;

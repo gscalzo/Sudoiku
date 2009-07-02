@@ -1,0 +1,10 @@
+The classic game of Sudoku with an appealing graphics.
+
+Kindly rate and suggest improvements.
+
+Features include
+- 800 unique puzzles to solve.
+- 4 levels: easy, simple, medium, expert.
+- Touchscreen support.
+- Auto save game.
+- Pencil markers.

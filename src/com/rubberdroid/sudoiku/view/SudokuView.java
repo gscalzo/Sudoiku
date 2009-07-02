@@ -64,7 +64,8 @@ public class SudokuView extends View implements Observer {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		soundManager.playTouch();
+		if (event.getAction() == MotionEvent.ACTION_DOWN)
+			soundManager.playTouch();
 		if (controller.isTouchManaged(event))
 			return true;
 
