@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">数独</string>
+	<string name="main_title">数独</string>
+	<string name="resume_label">继续</string>
+	<string name="new_game_label">新游戏</string>
+	<string name="add_schema_label">添加模式</string>
+	<string name="about_label">关于</string>
+	<string name="about_title">关于Sudoiku</string>
+	<string name="about_text">
+		\
+		数独是一种基于逻辑的数字安置迷题。
+		以部分的完成9x9的格子开始，
+		目标是填满所有的格子并且
+		每行，每列，以及每个3x3的盒子
+		(也被称之为
+		<i>blocks</i>
+		) 包含数字1到9仅一次。
+		\
+                     安卓网汉化（HiAPK.com）
+	</string>
+	<string name="settings_label">设置</string>
+	<string name="settings_title">数独设置</string>
+	<string name="soundfx_title">声音效果</string>
+	<string name="soundfx_summary">播放声音效果</string>
+	
+	
+	<string name="hints_notes_title">注释提示</string>
+	<string name="hints_notes_summary">显示可用的数字为注释</string>
+	<string name="hints_numbers_title">数字提示</string>
+	<string name="hints_numbers_summary">游戏中显示可用数字</string>
+	<string name="new_game_title">难度</string>
+	<string name="easy_label">容易</string>
+	<string name="simple_label">简单</string>
+	<string name="medium_label">中等</string>
+	<string name="expert_label">专家</string>
+	<string name="game_title">数独</string>
+	<string name="no_moves_label">没有行动</string>
+	<string name="keypad_title">小键盘</string>
+
+</resources>

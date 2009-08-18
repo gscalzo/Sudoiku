@@ -19,6 +19,8 @@
 		<i>blocks</i>
 		) contains the digits
 		1 to 9 exactly once.
+		\
+		Chinese translation by HiAPK.com
 	</string>
 	<string name="settings_label">Settings</string>
 	<string name="settings_title">Sudoiku settings</string>
