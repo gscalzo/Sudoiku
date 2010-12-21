@@ -1,5 +1,7 @@
 package com.rubberdroid.sudoiku;
  
+import java.util.TimerTask;
+
 import com.rubberdroid.sudoiku.R;
  
 import android.app.Activity;
@@ -7,24 +9,45 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
  
 public class Sudoku extends Activity implements OnClickListener {
   private static final String TAG = "Sudoiku";
+  private Handler mHandler = new Handler();
  
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.main);
+    setContentView(R.layout.rating);
+    
+    setMainLayoutTimedTask();
+  }
+
+
+private void setMainLayoutTimedTask() {
+	Runnable mUpdateTimeTask = new Runnable() {
+    	   public void run() {
+    		    setContentView(R.layout.main);
+    		    setMainMenu();
+    	   }
+    };
+    
+    mHandler.removeCallbacks(mUpdateTimeTask);
+    mHandler.postDelayed(mUpdateTimeTask, 5000);
+}
+  
+ 
+private void setMainMenu() {
+	setContentView(R.layout.main);
  
     addThisAsClickListenerTo(R.id.resume_button);
-//    addThisAsClickListenerTo(R.id.add_button);
     addThisAsClickListenerTo(R.id.new_button);
     addThisAsClickListenerTo(R.id.about_button);
     addThisAsClickListenerTo(R.id.settings_button);
-  }
+}
  
   private void addThisAsClickListenerTo(int viewId) {
     View button = findViewById(viewId);
